@@ -24,6 +24,7 @@ export const secondRow = [
 ];
 
 export const thirdRow = [
+  'ENTER',
   'Z',
   'X',
   'C',
@@ -31,4 +32,5 @@ export const thirdRow = [
   'B',
   'N',
   'M',
+  'backspace-outline'
 ]

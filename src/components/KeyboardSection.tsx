@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 
-import LetterKey from './LetterKey';
+import LetterKey from './common/LetterKey';
 
 import { firstRow, secondRow, thirdRow } from '../../alphabet';
 

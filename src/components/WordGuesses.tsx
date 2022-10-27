@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 
-import WordRow from './WordRow';
+import WordRow from './common/WordRow';
 
 const WordGuesses = (props: any) => {
 

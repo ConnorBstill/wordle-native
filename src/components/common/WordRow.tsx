@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 
-import { WHITE, DARK_GRAY } from '../colors';
+import { WHITE, DARK_GRAY } from '../../colors';
 
 const WordRow = (props: any) => {
 
