@@ -1,15 +1,43 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 
+import { WHITE, DARK_GRAY } from '../colors';
+
 const WordRow = (props: any) => {
+
+  const { container, letterBoxStyle } = styles;
   
   return (
-    <View style={styles.container}>
-      <TextInput style={styles.letterBoxStyle} />
-      <TextInput style={styles.letterBoxStyle} />
-      <TextInput style={styles.letterBoxStyle} />
-      <TextInput style={styles.letterBoxStyle} />
-      <TextInput style={styles.letterBoxStyle} />
+    <View style={container}>
+      <TextInput
+        textAlign='center'
+        caretHidden={true}
+        style={letterBoxStyle} 
+        maxLength={1} />
+
+      <TextInput
+        textAlign='center'
+        caretHidden={true}
+        style={letterBoxStyle} 
+        maxLength={1} />
+
+      <TextInput 
+        textAlign='center'
+        caretHidden={true}
+        style={letterBoxStyle} 
+        maxLength={1} />
+
+      <TextInput 
+        textAlign='center'
+        caretHidden={true}
+        style={letterBoxStyle} 
+        maxLength={1} />
+
+      <TextInput 
+        textAlign='center'
+        caretHidden={true}
+        style={letterBoxStyle} 
+        maxLength={1} />
     </View>
   );
 }
@@ -17,9 +45,11 @@ const WordRow = (props: any) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    justifyContent: 'center'
   },
   letterBoxStyle: {
-    borderColor: '#3a3a3c',
+    color: WHITE,
+    borderColor: DARK_GRAY,
     borderWidth: 2,
     width: 64,
     height: 64,

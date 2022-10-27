@@ -8,16 +8,28 @@ import KeyboardSection from './src/components/KeyboardSection';
 import * as COLORS from './src/colors';
 
 export default function App() {
+  const { 
+    container, 
+    fullContainer, 
+    contentContainer,
+    guessesContainer,
+    keyBoardContainer
+  } = styles;
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.fullContainer}>
+    <SafeAreaView style={container}>
+      <View style={fullContainer}>
         <StatusBar barStyle='light-content' />
         <Toolbar />
 
-        <View style ={styles.contentContainer}>
-          <WordGuesses />
+        <View style ={contentContainer}>
+          <View style={guessesContainer}>
+            <WordGuesses />
+          </View>
 
-          <KeyboardSection />
+          <View style={keyBoardContainer}>
+            <KeyboardSection />
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -28,8 +40,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.BLACK,
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   fullContainer: {
     marginTop: StatusBar.currentHeight,
@@ -39,7 +49,15 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    marginTop: 30,
+    alignContent: 'center',
+    justifyContent: 'space-between',
+  },
+  guessesContainer: {
     alignContent: 'center',
     justifyContent: 'center',
+  },
+  keyBoardContainer: {
+    // backgroundColor: 'red'
   }
 });

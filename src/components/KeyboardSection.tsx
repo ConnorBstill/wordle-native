@@ -3,18 +3,19 @@ import { View, Text, StyleSheet, TextInput } from 'react-native';
 
 import LetterKey from './LetterKey';
 
-import { alphabet } from '../../alphabet';
+import { firstRow, secondRow, thirdRow } from '../../alphabet';
 
 const KeyboardSection = () => {
+  const { container, rowContainer } = styles;
 
   const onKeyPress = (letter: string) => {
 
   }
 
-  const renderKeys = () => {
+  const renderRow = (rowCharacters: string[]) => {
     const keys: React.ReactElement[] = [];
 
-    alphabet.forEach((letter: string, i: number) => {
+    rowCharacters.forEach((letter: string, i: number) => {
       keys.push(<LetterKey key={i} title={letter} onKeyPress={() => onKeyPress(letter)} />)
     });
 
@@ -22,21 +23,29 @@ const KeyboardSection = () => {
   }
 
   return (
-    <View style={styles.container}>
-      {renderKeys()}
+    <View style={container}>
+      <View style={rowContainer}>{renderRow(firstRow)}</View>
+      <View style={rowContainer}>{renderRow(secondRow)}</View>
+      <View style={rowContainer}>{renderRow(thirdRow)}</View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: '25%',
+    height: '20%',
     width: '100%',
     justifyContent: 'center',
     alignContent: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap' 
     // flexShrink: 1
+  },
+  rowContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 5
   }
 });
 

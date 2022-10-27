@@ -1,28 +1,34 @@
-export const alphabet = [
-  'A',
-  'B',
-  'C',
-  'D',
+export const firstRow = [
+  'Q',
+  'W',
   'E',
+  'R',
+  'T',
+  'Y',
+  'U',
+  'I',
+  'O',
+  'P',
+];
+
+export const secondRow = [
+  'A',
+  'S',
+  'D',
   'F',
   'G',
   'H',
-  'I',
   'J',
   'K',
   'L',
-  'M',
-  'N',
-  'O',
-  'P',
-  'Q',
-  'R',
-  'S',
-  'T',
-  'U',
-  'V',
-  'W',
-  'X',
-  'Y',
+];
+
+export const thirdRow = [
   'Z',
+  'X',
+  'C',
+  'V',
+  'B',
+  'N',
+  'M',
 ]

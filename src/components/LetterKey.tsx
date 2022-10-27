@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
     width: 30,
     borderRadius: 4,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginHorizontal: 3
   },
   letterStyle: {
     color: '#fff'

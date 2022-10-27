@@ -19,7 +19,10 @@ const WordGuesses = (props: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%'
+    width: '100%',
+    alignContent: 'center',
+    justifyContent: 'center',
+    // backgroundColor: 'red'
   }
 });
 
