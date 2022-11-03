@@ -1,6 +1,9 @@
 // import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
+import { Provider, connect } from 'react-redux';
 
+import store from './src/redux/Store';
+
+import { StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
 import Toolbar from './src/components/Toolbar';
 import WordGuesses from './src/components/WordGuesses';
 import KeyboardSection from './src/components/KeyboardSection';
@@ -17,22 +20,24 @@ export default function App() {
   } = styles;
 
   return (
-    <SafeAreaView style={container}>
-      <View style={fullContainer}>
-        <StatusBar barStyle='light-content' />
-        <Toolbar />
+    <Provider store={store}>
+      <SafeAreaView style={container}>
+        <View style={fullContainer}>
+          <StatusBar barStyle='light-content' />
+          <Toolbar />
 
-        <View style ={contentContainer}>
-          <View style={guessesContainer}>
-            <WordGuesses />
-          </View>
+          <View style ={contentContainer}>
+            <View style={guessesContainer}>
+              <WordGuesses />
+            </View>
 
-          <View style={keyBoardContainer}>
-            <KeyboardSection />
+            <View style={keyBoardContainer}>
+              <KeyboardSection />
+            </View>
           </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </Provider>
   );
 }
 

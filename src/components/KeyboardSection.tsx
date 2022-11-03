@@ -16,7 +16,7 @@ const KeyboardSection = () => {
     const keys: React.ReactElement[] = [];
 
     rowCharacters.forEach((letter: string, i: number) => {
-      keys.push(<LetterKey key={i} title={letter} onKeyPress={() => onKeyPress(letter)} />)
+      keys.push(<LetterKey key={i} title={letter} />)
     });
 
     return keys;

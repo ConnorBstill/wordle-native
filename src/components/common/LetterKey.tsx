@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { inputLetter } from '../../redux/actions/GuessActions';
+
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@rneui/themed';
 
 import { WHITE } from '../../colors';
 
-const LetterKey = ({ title, onKeyPress }: { title: string, onKeyPress: Function }) => {
-
+const LetterKey = ({ title }: { title: string }) => {
   const { buttonStyle, letterStyle } = styles;
+
+  const storeState = useSelector((state: any) => {
+    console.log('state', state)
+    return state.letters
+  });
 
   const renderLabel = () => {
     if (title.length > 1 && title !== 'ENTER') {
@@ -21,10 +29,19 @@ const LetterKey = ({ title, onKeyPress }: { title: string, onKeyPress: Function 
     }
   }
 
+  const handlePress = () => {
+    console.log('handlePress', storeState)
+    if (title.length > 1) {
+
+    } else {
+      inputLetter(title)
+    }
+  }
+
   return (
     <View>
       <TouchableOpacity 
-        onPress={() => onKeyPress()} 
+        onPress={() => handlePress()} 
         style={{ ...buttonStyle, width: title.length > 1 ? 50 : 32 }}>
 
         {renderLabel()}
