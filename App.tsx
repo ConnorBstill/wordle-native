@@ -1,7 +1,7 @@
 // import { StatusBar } from 'expo-status-bar';
 import { Provider, connect } from 'react-redux';
 
-import store from './src/redux/Store';
+import { Store } from './src/redux/Store';
 
 import { StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
 import Toolbar from './src/components/Toolbar';
@@ -20,7 +20,7 @@ export default function App() {
   } = styles;
 
   return (
-    <Provider store={store}>
+    <Provider store={Store}>
       <SafeAreaView style={container}>
         <View style={fullContainer}>
           <StatusBar barStyle='light-content' />

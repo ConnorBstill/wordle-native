@@ -1,7 +1,15 @@
-import { createStore } from 'redux';
+import { configureStore } from '@reduxjs/toolkit'
 
-import getRootReducer from './reducers';
+import LetterReducer from './reducers/LetterReducer';
 
-const store = createStore(getRootReducer);
+export const Store = configureStore({
+  reducer: {
+    letters: LetterReducer
+  }
+})
 
-export default store;
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof Store.getState>
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof Store.dispatch

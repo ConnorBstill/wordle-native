@@ -1,35 +1,38 @@
 import { 
-  LETTER_INPUT,
+  INPUT_LETTER,
   ENTER_INPUT,
-  GUESS_WORD
+  GUESS_WORD,
+  CHANGE_FOCUSED_INPUT
 } from '../actions/types';
 
-interface InitialState {
+export interface State {
   guessNumber: number;
   letterPosition: number;
   guessedLetters: string[];
-  guessedWords: string[]
+  guessedWords: string[];
+  currentWord: string;
 }
 
 
-const initialState: InitialState = {
+const initialState: State = {
   guessNumber: 1,
-  letterPosition: 1,
+  letterPosition: 0,
   guessedLetters: [],
-  guessedWords: []
+  guessedWords: [],
+  currentWord: ''
 }
 
 export default (state = initialState, action: any) => {
-  console.log('REDUCER ONE')
   switch (action.type) {
-    case LETTER_INPUT:
+    case CHANGE_FOCUSED_INPUT:
       return { ...state, letterPosition: action.payload }
     case ENTER_INPUT:
       return { ...state, guessNumber: action.payload }
     case GUESS_WORD:
-      return { ...state, guessedWords: action.payload }
+      return { ...state, guessedWords: action.payload.guessedWords, guessedLetters: state.guessedLetters }
+    case INPUT_LETTER:
+      return { ...state, currentWord: action.payload }
     default:
-      console.log('REDUCER')
       return state;
   }
 }

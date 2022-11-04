@@ -7,7 +7,7 @@ const WordGuesses = (props: any) => {
 
   return (
     <View style={styles.container}>
-      <WordRow />
+      <WordRow row />
       <WordRow />
       <WordRow />
       <WordRow />

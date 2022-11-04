@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../redux/Hooks';
 
 import { inputLetter } from '../../redux/actions/GuessActions';
 
@@ -11,11 +11,23 @@ import { WHITE } from '../../colors';
 const LetterKey = ({ title }: { title: string }) => {
   const { buttonStyle, letterStyle } = styles;
 
-  const storeState = useSelector((state: any) => {
-    console.log('state', state)
+  const dispatch = useAppDispatch()
+
+  const storeState = useAppSelector((state: any) => {
+    // console.log('state', state)
     return state.letters
   });
-
+  
+  const handlePress = () => {
+    console.log('handlePress', storeState)
+    if (title.length > 1) {
+      
+    } else {
+      dispatch(inputLetter(title));
+    }
+    console.log('handlePress', storeState)
+  }
+  
   const renderLabel = () => {
     if (title.length > 1 && title !== 'ENTER') {
       return (
@@ -26,15 +38,6 @@ const LetterKey = ({ title }: { title: string }) => {
       )
     } else {
       return <Text style={letterStyle}>{title}</Text>
-    }
-  }
-
-  const handlePress = () => {
-    console.log('handlePress', storeState)
-    if (title.length > 1) {
-
-    } else {
-      inputLetter(title)
     }
   }
 
