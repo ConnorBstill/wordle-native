@@ -7,12 +7,12 @@ const WordGuesses = (props: any) => {
 
   return (
     <View style={styles.container}>
-      <WordRow row />
-      <WordRow />
-      <WordRow />
-      <WordRow />
-      <WordRow />
-      <WordRow />
+      <WordRow row={1} />
+      <WordRow row={2} />
+      <WordRow row={3} />
+      <WordRow row={4} />
+      <WordRow row={5} />
+      <WordRow row={6} />
     </View>
   );
 }

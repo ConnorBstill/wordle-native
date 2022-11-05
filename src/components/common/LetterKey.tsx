@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/Hooks';
 
-import { inputLetter } from '../../redux/actions/GuessActions';
+import { inputLetter, removeLetter, guessWord } from '../../redux/actions/GuessActions';
 
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@rneui/themed';
@@ -14,25 +14,24 @@ const LetterKey = ({ title }: { title: string }) => {
   const dispatch = useAppDispatch()
 
   const storeState = useAppSelector((state: any) => {
-    // console.log('state', state)
     return state.letters
   });
   
   const handlePress = () => {
-    console.log('handlePress', storeState)
-    if (title.length > 1) {
-      
+    if (title === 'backspace-outline') {
+      dispatch(removeLetter())
+    } else if (title === 'ENTER') {
+      dispatch(guessWord());
     } else {
       dispatch(inputLetter(title));
     }
-    console.log('handlePress', storeState)
   }
   
   const renderLabel = () => {
-    if (title.length > 1 && title !== 'ENTER') {
+    if (title === 'backspace-outline') {
       return (
         <Icon 
-          name='backspace-outline'
+          name={title}
           type='ionicon'
           color={WHITE} />
       )

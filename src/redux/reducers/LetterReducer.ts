@@ -2,7 +2,9 @@ import {
   INPUT_LETTER,
   ENTER_INPUT,
   GUESS_WORD,
-  CHANGE_FOCUSED_INPUT
+  CHANGE_FOCUSED_INPUT,
+  REMOVE_LETTER,
+  GO_TO_NEXT_ROW
 } from '../actions/types';
 
 export interface State {
@@ -11,6 +13,7 @@ export interface State {
   guessedLetters: string[];
   guessedWords: string[];
   currentWord: string;
+  enteredLetter: string;
 }
 
 
@@ -19,7 +22,8 @@ const initialState: State = {
   letterPosition: 0,
   guessedLetters: [],
   guessedWords: [],
-  currentWord: ''
+  currentWord: '',
+  enteredLetter: ''
 }
 
 export default (state = initialState, action: any) => {
@@ -29,9 +33,21 @@ export default (state = initialState, action: any) => {
     case ENTER_INPUT:
       return { ...state, guessNumber: action.payload }
     case GUESS_WORD:
-      return { ...state, guessedWords: action.payload.guessedWords, guessedLetters: state.guessedLetters }
+      return { 
+        ...state, 
+        guessedWords: action.payload.guessedWords, 
+        guessedLetters: action.payload.guessedLetters 
+      }
+    case GO_TO_NEXT_ROW:
+      return { 
+        ...state, 
+        guessNumber: action.payload.guessNumber, 
+        letterPosition: action.payload.letterPosition 
+      }
     case INPUT_LETTER:
-      return { ...state, currentWord: action.payload }
+      return { ...state, currentWord: action.payload.newWord, enteredLetter: action.payload.letter }
+    case REMOVE_LETTER:
+      return { ...state, letterPosition: action.payload.letterPosition, currentWord: action.payload.currentWord }
     default:
       return state;
   }
