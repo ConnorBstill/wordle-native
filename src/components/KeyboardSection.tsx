@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput } from 'react-native';
 
 import LetterKey from './common/LetterKey';
 
-import { firstRow, secondRow, thirdRow } from '../../alphabet';
+import { firstRow, secondRow, thirdRow } from '../constants/alphabet';
 
 const KeyboardSection = () => {
   const { container, rowContainer } = styles;

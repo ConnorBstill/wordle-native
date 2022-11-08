@@ -1,3 +1,5 @@
+import Toast from 'react-native-root-toast';
+
 import { 
   INPUT_LETTER, 
   CHANGE_FOCUSED_INPUT, 
@@ -7,6 +9,9 @@ import {
 } from './types';
 import { State } from '../reducers/LetterReducer';
 import { current } from '@reduxjs/toolkit';
+
+import { WORDS } from '../../constants/words';
+
 
 interface GetStore {
   (): { letters: State }
@@ -47,23 +52,42 @@ export const guessWord = () => {
       currentWord
     } = getStore().letters;
 
-    if(currentLetterPos === 5) {
-      if (currentGuessNumber === 6) {
-        // End game
-      } else if (currentGuessNumber < 6) {
-        dispatch({ type: GO_TO_NEXT_ROW, payload: { 
-          guessNumber: currentGuessNumber + 1, 
-          letterPosition: 0
-        }});
+    if (currentWord.length < 5) {
+      showToast('Not enough letters');
+      return;
+    } else if (!WORDS.includes(currentWord)) {
+      showToast('Not in word list');
+      return;
+    }
 
-        dispatch({ 
-          type: GUESS_WORD, 
-          payload: {
-            guessedWords: [...guessedWords, currentWord],
-            guessedLetters: [...currentGuessedLetters, [...currentWord.split('')]]
-          } 
-        });
-      }
+
+    const isLastGuess = currentGuessNumber === 6 && currentLetterPos === 5
+
+    if (isLastGuess) {
+      // End game
+    } else if (currentGuessNumber < 6) {
+      dispatch({ type: GO_TO_NEXT_ROW, payload: { 
+        guessNumber: currentGuessNumber + 1, 
+        letterPosition: 0
+      }});
+
+      dispatch({ 
+        type: GUESS_WORD, 
+        payload: {
+          guessedWords: [...guessedWords, currentWord],
+          guessedLetters: [...currentGuessedLetters, [...currentWord.split('')]]
+        } 
+      });
     }
   }
+}
+
+const showToast = (text: string) => {
+  console.log('TOAST')
+  Toast.show(text, {
+    duration: 3250,
+    position: 50,
+    backgroundColor: '#fff',
+    textColor: '#000'
+  });
 }

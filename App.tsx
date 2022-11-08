@@ -1,5 +1,6 @@
 // import { StatusBar } from 'expo-status-bar';
 import { Provider, connect } from 'react-redux';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 import { Store } from './src/redux/Store';
 
@@ -20,24 +21,26 @@ export default function App() {
   } = styles;
 
   return (
-    <Provider store={Store}>
-      <SafeAreaView style={container}>
-        <View style={fullContainer}>
-          <StatusBar barStyle='light-content' />
-          <Toolbar />
+    <RootSiblingParent>
+      <Provider store={Store}>
+        <SafeAreaView style={container}>
+          <View style={fullContainer}>
+            <StatusBar barStyle='light-content' />
+            <Toolbar />
 
-          <View style ={contentContainer}>
-            <View style={guessesContainer}>
-              <WordGuesses />
-            </View>
+            <View style ={contentContainer}>
+              <View style={guessesContainer}>
+                <WordGuesses />
+              </View>
 
-            <View style={keyBoardContainer}>
-              <KeyboardSection />
+              <View style={keyBoardContainer}>
+                <KeyboardSection />
+              </View>
             </View>
           </View>
-        </View>
-      </SafeAreaView>
-    </Provider>
+        </SafeAreaView>
+      </Provider>
+    </RootSiblingParent>
   );
 }
 
