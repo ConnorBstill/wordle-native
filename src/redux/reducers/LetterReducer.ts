@@ -14,6 +14,7 @@ export interface State {
   guessedWords: string[];
   currentWord: string;
   enteredLetter: string;
+  correctWord: string;
 }
 
 
@@ -23,7 +24,8 @@ const initialState: State = {
   guessedLetters: [],
   guessedWords: [],
   currentWord: '',
-  enteredLetter: ''
+  enteredLetter: '',
+  correctWord: 'HAIRY'
 }
 
 export default (state = initialState, action: any) => {
@@ -42,7 +44,8 @@ export default (state = initialState, action: any) => {
       return { 
         ...state, 
         guessNumber: action.payload.guessNumber, 
-        letterPosition: action.payload.letterPosition 
+        letterPosition: action.payload.letterPosition,
+        currentWord: action.payload.currentWord
       }
     case INPUT_LETTER:
       return { ...state, currentWord: action.payload.newWord, enteredLetter: action.payload.letter }

@@ -51,24 +51,29 @@ export const guessWord = () => {
       guessedWords,
       currentWord
     } = getStore().letters;
+    const isLastGuess = currentGuessNumber === 6 && currentLetterPos === 5;
 
     if (currentWord.length < 5) {
       showToast('Not enough letters');
       return;
-    } else if (!WORDS.includes(currentWord)) {
+    }
+
+    if (!WORDS.includes(currentWord.toLowerCase())) {
       showToast('Not in word list');
       return;
     }
 
 
-    const isLastGuess = currentGuessNumber === 6 && currentLetterPos === 5
 
     if (isLastGuess) {
-      // End game
-    } else if (currentGuessNumber < 6) {
+      return;
+    }
+
+    if (currentGuessNumber < 6) {
       dispatch({ type: GO_TO_NEXT_ROW, payload: { 
         guessNumber: currentGuessNumber + 1, 
-        letterPosition: 0
+        letterPosition: 0,
+        currentWord: ''
       }});
 
       dispatch({ 
@@ -83,7 +88,6 @@ export const guessWord = () => {
 }
 
 const showToast = (text: string) => {
-  console.log('TOAST')
   Toast.show(text, {
     duration: 3250,
     position: 50,

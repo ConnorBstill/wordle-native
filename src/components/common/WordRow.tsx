@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput } from 'react-native';
 
 import { useAppDispatch, useAppSelector } from '../../redux/Hooks';
 
-import { WHITE, DARK_GRAY } from '../../colors';
+import { WHITE, DARK_GRAY, GREEN, DARK_YELLOW, BLACK } from '../../colors';
 
 const WordRow = (props: { row: number }) => {
   const storeState = useAppSelector(state => state.letters);
@@ -27,22 +27,40 @@ const WordRow = (props: { row: number }) => {
       '4': 'fourthLetter',
       '5': 'fifthLetter'
     }
-    
-    // const key = letterPosition.toString();
 
     if (action === 'ADD') {
       const key = letterPosition.toString();
+
       setWordState((prevWord) => { 
         return { ...prevWord, [wordStateMap[key]]: enteredLetter }
       });
     } else {
       const key = (letterPosition + 1).toString();
+
       setWordState((prevWord) => { 
         return { ...prevWord, [wordStateMap[key]]: '' }
       });
     }
     
     setCurrentPosition(letterPosition)
+  }
+
+  const setLetterBackground = (letter: string, letterIndex: number) => {
+    const { correctWord, guessNumber } = storeState;
+
+    if (!letter) {
+      return { backgroundColor: BLACK }
+    }
+
+    if (currentRow > currentRow) {
+      return
+    }
+
+    if (correctWord.includes(letter) && correctWord[letterIndex] === letter) {
+      return { backgroundColor: GREEN }
+    } else if (correctWord.includes(letter) && correctWord[letterIndex] !== letter) {
+      return { backgroundColor: DARK_YELLOW }
+    }
   }
 
   useEffect(() => {
@@ -61,7 +79,7 @@ const WordRow = (props: { row: number }) => {
         value={wordState.firstLetter}
         textAlign='center'
         caretHidden={true}
-        style={letterBoxStyle} 
+        style={[letterBoxStyle, setLetterBackground(wordState.firstLetter, 0)]} 
         maxLength={1}
         editable={false} />
 
@@ -69,7 +87,7 @@ const WordRow = (props: { row: number }) => {
         value={wordState.secondLetter}
         textAlign='center'
         caretHidden={true}
-        style={letterBoxStyle} 
+        style={[letterBoxStyle, setLetterBackground(wordState.secondLetter, 1)]} 
         maxLength={1}
         editable={false} />
 
@@ -77,7 +95,7 @@ const WordRow = (props: { row: number }) => {
         value={wordState.thirdLetter}
         textAlign='center'
         caretHidden={true}
-        style={letterBoxStyle} 
+        style={[letterBoxStyle, setLetterBackground(wordState.thirdLetter, 2)]} 
         maxLength={1}
         editable={false} />
 
@@ -85,7 +103,7 @@ const WordRow = (props: { row: number }) => {
         value={wordState.fourthLetter}
         textAlign='center'
         caretHidden={true}
-        style={letterBoxStyle} 
+        style={[letterBoxStyle, setLetterBackground(wordState.fourthLetter, 3)]} 
         maxLength={1}
         editable={false} />
 
@@ -93,7 +111,7 @@ const WordRow = (props: { row: number }) => {
         value={wordState.fifthLetter}
         textAlign='center'
         caretHidden={true}
-        style={letterBoxStyle} 
+        style={[letterBoxStyle, setLetterBackground(wordState.fifthLetter, 4)]} 
         maxLength={1}
         editable={false} />
     </View>
