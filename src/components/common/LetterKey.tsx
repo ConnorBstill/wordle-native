@@ -59,13 +59,15 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 3
+    marginHorizontal: 3,
   },
   widerButton: {
 
   },
   letterStyle: {
-    color: '#fff'
+    color: '#fff',
+    fontFamily: 'Helvetica',
+    fontWeight: 'bold'
   }
 })
 

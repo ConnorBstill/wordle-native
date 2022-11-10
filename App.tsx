@@ -1,10 +1,14 @@
 // import { StatusBar } from 'expo-status-bar';
+import { useEffect, useCallback } from 'react';
 import { Provider, connect } from 'react-redux';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+
 import { Store } from './src/redux/Store';
 
-import { StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
+import { StyleSheet, SafeAreaView, View, StatusBar, Platform } from 'react-native';
 import Toolbar from './src/components/Toolbar';
 import WordGuesses from './src/components/WordGuesses';
 import KeyboardSection from './src/components/KeyboardSection';
@@ -20,10 +24,31 @@ export default function App() {
     keyBoardContainer
   } = styles;
 
+  const [fontsLoaded] = useFonts({
+    'Helvetica': require('./assets/fonts/Helvetica-Neue-W01-66-Medium-It.ttf'),
+  });
+
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <RootSiblingParent>
       <Provider store={Store}>
-        <SafeAreaView style={container}>
+        <SafeAreaView style={container} onLayout={onLayoutRootView}>
           <View style={fullContainer}>
             <StatusBar barStyle='light-content' />
             <Toolbar />

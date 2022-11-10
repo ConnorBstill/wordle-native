@@ -8,7 +8,6 @@ import { WHITE, DARK_GRAY, GREEN, DARK_YELLOW, BLACK } from '../../colors';
 const WordRow = (props: { row: number }) => {
   const storeState = useAppSelector(state => state.letters);
   const [currentPosition, setCurrentPosition] = useState(0);
-  const [currentRow, setCurrentRow] = useState(1);
   const [wordState, setWordState] = useState({
     firstLetter: '',
     secondLetter: '',
@@ -48,12 +47,8 @@ const WordRow = (props: { row: number }) => {
   const setLetterBackground = (letter: string, letterIndex: number) => {
     const { correctWord, guessNumber } = storeState;
 
-    if (!letter) {
+    if (guessNumber <= props.row || !letter) {
       return { backgroundColor: BLACK }
-    }
-
-    if (currentRow > currentRow) {
-      return
     }
 
     if (correctWord.includes(letter) && correctWord[letterIndex] === letter) {
@@ -130,7 +125,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     width: 64,
     height: 64,
-    margin: 3
+    margin: 3,
+    fontFamily: 'Helvetica',
+    fontWeight: 'bold'
   }
 })
 

@@ -49,9 +49,14 @@ export const guessWord = () => {
       letterPosition: currentLetterPos,
       guessedLetters: currentGuessedLetters,
       guessedWords,
-      currentWord
+      currentWord,
+      correctWord
     } = getStore().letters;
     const isLastGuess = currentGuessNumber === 6 && currentLetterPos === 5;
+
+    if (currentWord === correctWord) {
+      showToast('You did it!');
+    }
 
     if (currentWord.length < 5) {
       showToast('Not enough letters');
@@ -62,8 +67,6 @@ export const guessWord = () => {
       showToast('Not in word list');
       return;
     }
-
-
 
     if (isLastGuess) {
       return;
