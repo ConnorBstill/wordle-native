@@ -10,7 +10,7 @@ import {
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Icon } from "@rneui/themed";
 
-import { WHITE, GREEN, DARK_YELLOW, GRAY } from "../../colors";
+import { WHITE, GREEN, DARK_YELLOW, GRAY, DARK_GRAY } from "../../colors";
 
 const LetterKey = ({ title }: { title: string }) => {
   const { guessedLetters, correctWord, guessedWords } = useAppSelector(
@@ -30,9 +30,10 @@ const LetterKey = ({ title }: { title: string }) => {
     }
   };
 
-  const setKeyBackground = (letter: string, letterIndex: number) => {
+  const setKeyBackground = () => {
     // const { correctWord, guessNumber } = storeState;
-    let color;
+    let color = GRAY;
+    console.log('KEY BACK')
 
     guessedWords.forEach((word: string) => {
       if (
@@ -41,23 +42,18 @@ const LetterKey = ({ title }: { title: string }) => {
       ) {
         color = GREEN;
       } else if (
+        word.indexOf(title) !== -1 &&
         correctWord.indexOf(title) !== -1 &&
         correctWord.indexOf(title) !== word.indexOf(title)
       ) {
+        console.log(correctWord.indexOf(title), word.indexOf(title))
         color = DARK_YELLOW;
-      } else if (correctWord.indexOf(title) === -1) {
-        color = GRAY;
+      } else if (word.indexOf(title) !== -1 && correctWord.indexOf(title) === -1) {
+        color = DARK_GRAY;
       }
     });
 
-    if (guessedLetters.includes(title) && correctWord[letterIndex] === letter) {
-      return { backgroundColor: GREEN };
-    } else if (
-      correctWord.includes(letter) &&
-      correctWord[letterIndex] !== letter
-    ) {
-      return { backgroundColor: DARK_YELLOW };
-    }
+    return { backgroundColor: color }
   };
 
   const setKeyWidth = () => {
@@ -76,7 +72,7 @@ const LetterKey = ({ title }: { title: string }) => {
     <View>
       <TouchableOpacity
         onPress={() => handlePress()}
-        style={[{ ...buttonStyle, ...setKeyWidth() }]}
+        style={[{ ...buttonStyle, ...setKeyWidth() }, setKeyBackground()]}
       >
         {renderLabel()}
       </TouchableOpacity>
