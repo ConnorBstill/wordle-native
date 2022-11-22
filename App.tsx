@@ -26,6 +26,7 @@ export default function App() {
 
   const [fontsLoaded] = useFonts({
     'Helvetica': require('./assets/fonts/Helvetica-Neue-W01-66-Medium-It.ttf'),
+    'Karnak': require('./assets/fonts/karnak-normal-400.ttf'),
   });
 
   useEffect(() => {

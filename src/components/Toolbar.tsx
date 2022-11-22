@@ -39,7 +39,8 @@ const styles = StyleSheet.create({
   },
   titleStyle: {
     color: COLORS.WHITE,
-    fontSize: 28
+    fontSize: 28,
+    fontFamily: 'Karnak'
   }
 });
 

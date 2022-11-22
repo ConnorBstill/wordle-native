@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '../../redux/Hooks';
 import { WHITE, DARK_GRAY, GREEN, DARK_YELLOW, BLACK } from '../../colors';
 
 const WordRow = (props: { row: number }) => {
-  const storeState = useAppSelector(state => state.letters);
   const [currentPosition, setCurrentPosition] = useState(0);
   const [wordState, setWordState] = useState({
     firstLetter: '',
@@ -15,6 +14,7 @@ const WordRow = (props: { row: number }) => {
     fourthLetter: '',
     fifthLetter: '',
   });
+  const storeState = useAppSelector(state => state.letters);
 
   const { container, letterBoxStyle } = styles;
 
@@ -66,7 +66,7 @@ const WordRow = (props: { row: number }) => {
     } else if (props.row === guessNumber && letterPosition < currentPosition) {
       updateWord(letterPosition, 'REMOVE');
     }
-  }, [storeState.letterPosition, storeState.guessNumber])
+  }, [storeState.letterPosition, storeState.guessNumber]);
   
   return (
     <View style={container}>
