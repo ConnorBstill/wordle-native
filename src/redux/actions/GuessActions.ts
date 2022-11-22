@@ -1,25 +1,28 @@
-import Toast from 'react-native-root-toast';
+import Toast from "react-native-root-toast";
 
-import { 
-  INPUT_LETTER, 
-  CHANGE_FOCUSED_INPUT, 
-  GUESS_WORD, 
+import {
+  INPUT_LETTER,
+  CHANGE_FOCUSED_INPUT,
+  GUESS_WORD,
   GO_TO_NEXT_ROW,
-  REMOVE_LETTER
-} from './types';
-import { State } from '../reducers/LetterReducer';
-import { current } from '@reduxjs/toolkit';
+  REMOVE_LETTER,
+} from "./types";
+import { State } from "../reducers/LetterReducer";
+import { current } from "@reduxjs/toolkit";
 
-import { WORDS } from '../../constants/words';
-
+import { WORDS } from "../../constants/words";
 
 interface GetStore {
-  (): { letters: State }
+  (): { letters: State };
 }
 
 export const inputLetter = (letter: string) => {
   return (dispatch: any, getStore: GetStore) => {
-    const { letterPosition: currentLetterPos, currentWord, guessNumber } = getStore().letters;
+    const {
+      letterPosition: currentLetterPos,
+      currentWord,
+      guessNumber,
+    } = getStore().letters;
 
     if (currentLetterPos < 5) {
       const newWord = currentWord + letter;
@@ -27,44 +30,48 @@ export const inputLetter = (letter: string) => {
       dispatch({ type: CHANGE_FOCUSED_INPUT, payload: currentLetterPos + 1 });
       dispatch({ type: INPUT_LETTER, payload: { newWord, letter } });
     }
-  }
-}
+  };
+};
 
 export const removeLetter = () => {
   return (dispatch: any, getStore: GetStore) => {
-    const { letterPosition: currentLetterPos, currentWord } = getStore().letters
+    const { letterPosition: currentLetterPos, currentWord } =
+      getStore().letters;
     if (currentLetterPos > 0) {
-      dispatch({ type: REMOVE_LETTER, payload: { 
-        letterPosition: currentLetterPos - 1, 
-        currentWord: currentWord.slice(0, currentWord.length - 1) 
-      }});
+      dispatch({
+        type: REMOVE_LETTER,
+        payload: {
+          letterPosition: currentLetterPos - 1,
+          currentWord: currentWord.slice(0, currentWord.length - 1),
+        },
+      });
     }
-  }
-}
+  };
+};
 
 export const guessWord = () => {
   return (dispatch: any, getStore: GetStore) => {
-    const { 
+    const {
       guessNumber: currentGuessNumber,
       letterPosition: currentLetterPos,
       guessedLetters: currentGuessedLetters,
       guessedWords,
       currentWord,
-      correctWord
+      correctWord,
     } = getStore().letters;
     const isLastGuess = currentGuessNumber === 6 && currentLetterPos === 5;
 
     if (currentWord === correctWord) {
-      showToast('You did it!');
+      showToast("You did it!");
     }
 
     if (currentWord.length < 5) {
-      showToast('Not enough letters');
+      showToast("Not enough letters");
       return;
     }
 
     if (!WORDS.includes(currentWord.toLowerCase())) {
-      showToast('Not in word list');
+      showToast("Not in word list");
       return;
     }
 
@@ -73,28 +80,34 @@ export const guessWord = () => {
     }
 
     if (currentGuessNumber < 6) {
-      dispatch({ type: GO_TO_NEXT_ROW, payload: { 
-        guessNumber: currentGuessNumber + 1, 
-        letterPosition: 0,
-        currentWord: ''
-      }});
+      dispatch({
+        type: GO_TO_NEXT_ROW,
+        payload: {
+          guessNumber: currentGuessNumber + 1,
+          letterPosition: 0,
+          currentWord: "",
+        },
+      });
 
-      dispatch({ 
-        type: GUESS_WORD, 
+      dispatch({
+        type: GUESS_WORD,
         payload: {
           guessedWords: [...guessedWords, currentWord],
-          guessedLetters: [...currentGuessedLetters, [...currentWord.split('')]]
-        } 
+          guessedLetters: [
+            ...currentGuessedLetters,
+            [...currentWord.split("")],
+          ],
+        },
       });
     }
-  }
-}
+  };
+};
 
 const showToast = (text: string) => {
   Toast.show(text, {
     duration: 3250,
     position: 50,
-    backgroundColor: '#fff',
-    textColor: '#000'
+    backgroundColor: "#fff",
+    textColor: "#000",
   });
-}
+};
