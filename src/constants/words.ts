@@ -5757,3 +5757,5 @@ export const WORDS = [
   "biffy",
   "pupal",
 ];
+
+export const WORD_OF_THE_DAY = WORDS[Math.floor(Math.random() * WORDS.length)];

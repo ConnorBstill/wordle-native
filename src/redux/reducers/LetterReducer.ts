@@ -7,6 +7,8 @@ import {
   GO_TO_NEXT_ROW,
 } from "../actions/types";
 
+import { WORD_OF_THE_DAY } from '../../constants/words';
+
 export interface State {
   guessNumber: number;
   letterPosition: number;
@@ -24,7 +26,7 @@ const initialState: State = {
   guessedWords: [],
   currentWord: "",
   enteredLetter: "",
-  correctWord: "HAIRY",
+  correctWord: WORD_OF_THE_DAY,
 };
 
 export default (state = initialState, action: any) => {
