@@ -1,6 +1,6 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit';
 
-import LetterReducer from "./reducers/LetterReducer";
+import LetterReducer from './reducers/LetterReducer';
 
 export const Store = configureStore({
   reducer: {

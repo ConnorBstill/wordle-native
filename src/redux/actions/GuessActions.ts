@@ -1,4 +1,4 @@
-import Toast from "react-native-root-toast";
+import Toast from 'react-native-root-toast';
 
 import {
   INPUT_LETTER,
@@ -6,11 +6,11 @@ import {
   GUESS_WORD,
   GO_TO_NEXT_ROW,
   REMOVE_LETTER,
-} from "./types";
-import { State } from "../reducers/LetterReducer";
-import { current } from "@reduxjs/toolkit";
+} from './types';
+import { State } from '../reducers/LetterReducer';
+import { current } from '@reduxjs/toolkit';
 
-import { WORDS } from "../../constants/words";
+import { WORDS } from '../../constants/words';
 
 interface GetStore {
   (): { letters: State };
@@ -62,16 +62,16 @@ export const guessWord = () => {
     const isLastGuess = currentGuessNumber === 6 && currentLetterPos === 5;
 
     if (currentWord === correctWord) {
-      showToast("You did it!");
+      showToast('You did it!');
     }
 
     if (currentWord.length < 5) {
-      showToast("Not enough letters");
+      showToast('Not enough letters');
       return;
     }
 
     if (!WORDS.includes(currentWord.toLowerCase())) {
-      showToast("Not in word list");
+      showToast('Not in word list');
       return;
     }
 
@@ -85,7 +85,7 @@ export const guessWord = () => {
         payload: {
           guessNumber: currentGuessNumber + 1,
           letterPosition: 0,
-          currentWord: "",
+          currentWord: '',
         },
       });
 
@@ -95,7 +95,7 @@ export const guessWord = () => {
           guessedWords: [...guessedWords, currentWord],
           guessedLetters: [
             ...currentGuessedLetters,
-            [...currentWord.split("")],
+            [...currentWord.split('')],
           ],
         },
       });
@@ -107,7 +107,7 @@ const showToast = (text: string) => {
   Toast.show(text, {
     duration: 3250,
     position: 50,
-    backgroundColor: "#fff",
-    textColor: "#000",
+    backgroundColor: '#fff',
+    textColor: '#000',
   });
 };

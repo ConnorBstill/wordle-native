@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/Hooks";
+import React, { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../redux/Hooks';
 
 import {
   inputLetter,
   removeLetter,
   guessWord,
-} from "../../redux/actions/GuessActions";
+} from '../../redux/actions/GuessActions';
 
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Icon } from "@rneui/themed";
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Icon } from '@rneui/themed';
 
-import { WHITE, GREEN, DARK_YELLOW, GRAY, DARK_GRAY } from "../../colors";
+import { WHITE, GREEN, DARK_YELLOW, GRAY, DARK_GRAY } from '../../colors';
 
 const LetterKey = ({ title }: { title: string }) => {
   const { guessedLetters, correctWord, guessedWords } = useAppSelector(
@@ -21,9 +21,9 @@ const LetterKey = ({ title }: { title: string }) => {
   const dispatch = useAppDispatch();
 
   const handlePress = () => {
-    if (title === "backspace-outline") {
+    if (title === 'backspace-outline') {
       dispatch(removeLetter());
-    } else if (title === "ENTER") {
+    } else if (title === 'ENTER') {
       dispatch(guessWord());
     } else {
       dispatch(inputLetter(title));
@@ -33,7 +33,7 @@ const LetterKey = ({ title }: { title: string }) => {
   const setKeyBackground = () => {
     // const { correctWord, guessNumber } = storeState;
     let color = GRAY;
-    console.log('KEY BACK')
+    console.log('KEY BACK');
 
     guessedWords.forEach((word: string) => {
       if (
@@ -46,14 +46,17 @@ const LetterKey = ({ title }: { title: string }) => {
         correctWord.indexOf(title) !== -1 &&
         correctWord.indexOf(title) !== word.indexOf(title)
       ) {
-        console.log(correctWord.indexOf(title), word.indexOf(title))
+        console.log(correctWord.indexOf(title), word.indexOf(title));
         color = DARK_YELLOW;
-      } else if (word.indexOf(title) !== -1 && correctWord.indexOf(title) === -1) {
+      } else if (
+        word.indexOf(title) !== -1 &&
+        correctWord.indexOf(title) === -1
+      ) {
         color = DARK_GRAY;
       }
     });
 
-    return { backgroundColor: color }
+    return { backgroundColor: color };
   };
 
   const setKeyWidth = () => {
@@ -61,7 +64,7 @@ const LetterKey = ({ title }: { title: string }) => {
   };
 
   const renderLabel = () => {
-    if (title === "backspace-outline") {
+    if (title === 'backspace-outline') {
       return <Icon name={title} type="ionicon" color={WHITE} />;
     } else {
       return <Text style={letterStyle}>{title}</Text>;
@@ -82,18 +85,18 @@ const LetterKey = ({ title }: { title: string }) => {
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    backgroundColor: "#818384",
+    backgroundColor: '#818384',
     height: 58,
     borderRadius: 4,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginHorizontal: 3,
   },
   widerButton: {},
   letterStyle: {
-    color: "#fff",
-    fontFamily: "Helvetica",
-    fontWeight: "bold",
+    color: '#fff',
+    fontFamily: 'Helvetica',
+    fontWeight: 'bold',
   },
 });
 

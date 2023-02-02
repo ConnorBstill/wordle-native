@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
 
-import WordRow from "./common/WordRow";
+import WordRow from './common/WordRow';
 
 const WordGuesses = (props: any) => {
   return (
@@ -18,9 +18,9 @@ const WordGuesses = (props: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    alignContent: "center",
-    justifyContent: "center",
+    width: '100%',
+    alignContent: 'center',
+    justifyContent: 'center',
     // backgroundColor: 'red'
   },
 });

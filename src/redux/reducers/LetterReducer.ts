@@ -5,7 +5,7 @@ import {
   CHANGE_FOCUSED_INPUT,
   REMOVE_LETTER,
   GO_TO_NEXT_ROW,
-} from "../actions/types";
+} from '../actions/types';
 
 import { WORD_OF_THE_DAY } from '../../constants/words';
 
@@ -24,8 +24,8 @@ const initialState: State = {
   letterPosition: 0,
   guessedLetters: [],
   guessedWords: [],
-  currentWord: "",
-  enteredLetter: "",
+  currentWord: '',
+  enteredLetter: '',
   correctWord: WORD_OF_THE_DAY,
 };
 
