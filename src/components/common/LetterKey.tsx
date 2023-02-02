@@ -33,7 +33,6 @@ const LetterKey = ({ title }: { title: string }) => {
   const setKeyBackground = () => {
     // const { correctWord, guessNumber } = storeState;
     let color = GRAY;
-    console.log('KEY BACK');
 
     guessedWords.forEach((word: string) => {
       if (
@@ -46,7 +45,6 @@ const LetterKey = ({ title }: { title: string }) => {
         correctWord.indexOf(title) !== -1 &&
         correctWord.indexOf(title) !== word.indexOf(title)
       ) {
-        console.log(correctWord.indexOf(title), word.indexOf(title));
         color = DARK_YELLOW;
       } else if (
         word.indexOf(title) !== -1 &&
