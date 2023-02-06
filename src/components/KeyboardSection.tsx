@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
 
 import LetterKey from './common/LetterKey';
 
@@ -7,8 +7,6 @@ import { firstRow, secondRow, thirdRow } from '../constants/alphabet';
 
 const KeyboardSection = () => {
   const { container, rowContainer } = styles;
-
-  const onKeyPress = (letter: string) => {};
 
   const renderRow = (rowCharacters: string[]) => {
     const keys: React.ReactElement[] = [];
@@ -37,7 +35,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    // flexShrink: 1
   },
   rowContainer: {
     width: '100%',

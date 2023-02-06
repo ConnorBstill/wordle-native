@@ -26,7 +26,7 @@ const initialState: State = {
   guessedWords: [],
   currentWord: '',
   enteredLetter: '',
-  correctWord: WORD_OF_THE_DAY,
+  correctWord: WORD_OF_THE_DAY.toUpperCase(),
 };
 
 export default (state = initialState, action: any) => {
