@@ -8,7 +8,6 @@ import {
   REMOVE_LETTER,
 } from './types';
 import { State } from '../reducers/LetterReducer';
-import { current } from '@reduxjs/toolkit';
 
 import { WORDS } from '../../constants/words';
 
@@ -76,6 +75,7 @@ export const guessWord = () => {
     }
 
     if (isLastGuess) {
+      showToast(correctWord);
       return;
     }
 
