@@ -1,6 +1,6 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useEffect, useCallback } from 'react';
-import { Provider, connect } from 'react-redux';
+import { Provider } from 'react-redux';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 import { useFonts } from 'expo-font';
@@ -8,10 +8,11 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { Store } from './src/redux/Store';
 
-import { StyleSheet, SafeAreaView, View, StatusBar, Platform } from 'react-native';
+import { StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
 import Toolbar from './src/components/Toolbar';
 import WordGuesses from './src/components/WordGuesses';
 import KeyboardSection from './src/components/KeyboardSection';
+import ScreenModal from './src/components/common/ScreenModal';
 
 import * as COLORS from './src/colors';
 
@@ -64,6 +65,8 @@ export default function App() {
               </View>
             </View>
           </View>
+
+          <ScreenModal />
         </SafeAreaView>
       </Provider>
     </RootSiblingParent>
