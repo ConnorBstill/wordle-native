@@ -6,6 +6,7 @@ import {
   GUESS_WORD,
   GO_TO_NEXT_ROW,
   REMOVE_LETTER,
+  ANIMATE_GUESS
 } from './types';
 import { State } from '../reducers/LetterReducer';
 
@@ -78,6 +79,13 @@ export const guessWord = () => {
       showToast(correctWord);
       return;
     }
+
+    dispatch({
+      type: ANIMATE_GUESS,
+      payload: {
+        guessNumber: currentGuessNumber
+      }
+    })
 
     if (currentGuessNumber < 6) {
       dispatch({

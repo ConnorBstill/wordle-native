@@ -8,7 +8,7 @@ import {
 } from '../actions/types';
 
 import { WORD_OF_THE_DAY } from '../../constants/words';
-
+console.log('WORD_OF_THE_DAY', WORD_OF_THE_DAY);
 export interface State {
   guessNumber: number;
   letterPosition: number;

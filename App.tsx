@@ -66,7 +66,7 @@ export default function App() {
             </View>
           </View>
 
-          <ScreenModal />
+          {/* <ScreenModal /> */}
         </SafeAreaView>
       </Provider>
     </RootSiblingParent>
