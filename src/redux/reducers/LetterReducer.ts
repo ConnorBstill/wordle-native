@@ -21,7 +21,7 @@ export interface State {
 
 const initialState: State = {
   guessNumber: 1,
-  letterPosition: 0,
+  letterPosition: -1,
   guessedLetters: [],
   guessedWords: [],
   currentWord: '',

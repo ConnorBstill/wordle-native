@@ -24,9 +24,9 @@ export const inputLetter = (letter: string) => {
       guessNumber,
     } = getStore().letters;
 
-    if (currentLetterPos < 5) {
+    if (currentLetterPos < 4) {
       const newWord = currentWord + letter;
-
+      console.log('currentLetterPos', currentLetterPos)
       dispatch({ type: CHANGE_FOCUSED_INPUT, payload: currentLetterPos + 1 });
       dispatch({ type: INPUT_LETTER, payload: { newWord, letter } });
     }

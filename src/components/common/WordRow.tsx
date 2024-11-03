@@ -7,16 +7,22 @@ import { WHITE, DARK_GRAY, GREEN, DARK_YELLOW, BLACK } from '../../colors';
 
 const WordRow = (props: { row: number }) => {
   const [currentLetterPosition, setCurrentLetterPosition] = useState(0);
-  const [wordState, setWordState] = useState({
-    firstLetter: '',
-    secondLetter: '',
-    thirdLetter: '',
-    fourthLetter: '',
-    fifthLetter: '',
-  });
+  const [wordState, setWordState] = useState(['', '', '', '', '']);
+
+  const [letterBackgrounds, setLetterBackgrounds] = useState([
+    BLACK, BLACK, BLACK, BLACK, BLACK
+  ]);
+
+  const flipAnimationValues = useRef([
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0)
+  ]).current;
+
   const storeState = useAppSelector((state) => state.letters);
 
-  const flipAnimationValue = useRef(new Animated.Value(1)).current;
 
   const { container, letterBoxStyle } = styles;
 
@@ -25,29 +31,23 @@ const WordRow = (props: { row: number }) => {
     action: string,
     enteredLetter?: string
   ) => {
-    console.log('updateWord')
-    const wordStateMap: any = {
-      '1': 'firstLetter',
-      '2': 'secondLetter',
-      '3': 'thirdLetter',
-      '4': 'fourthLetter',
-      '5': 'fifthLetter',
-    };
 
-    if (action === 'ADD') {
-      const key = letterPosition.toString();
-
+    console.log('updateWord', letterPosition, enteredLetter)
+    if (action === 'ADD' && enteredLetter) {
       setWordState((prevWord) => {
-        return { 
-          ...prevWord, 
-          [wordStateMap[key]]: enteredLetter 
-        };
+        const prevWordCopy = prevWord.slice();
+        console.log('letterPosition', letterPosition)
+        prevWordCopy[letterPosition] = enteredLetter;
+
+        return prevWordCopy;
       });
     } else {
-      const key = (letterPosition + 1).toString();
-
       setWordState((prevWord) => {
-        return { ...prevWord, [wordStateMap[key]]: '' };
+        const prevWordCopy = prevWord.slice();
+
+        prevWordCopy[letterPosition] = '';
+
+        return prevWordCopy;
       });
     }
 
@@ -57,29 +57,70 @@ const WordRow = (props: { row: number }) => {
   const setLetterBackground = (letter: string, letterIndex: number) => {
     const { correctWord, guessNumber } = storeState;
 
-    if (guessNumber <= props.row || !letter) {
-      return { backgroundColor: BLACK };
-    }
+    let backgroundColor = BLACK;
 
-    if (correctWord.includes(letter) && correctWord[letterIndex] === letter) {
-      return { backgroundColor: GREEN };
-    } else if (
-      correctWord.includes(letter) &&
-      correctWord[letterIndex] !== letter
-    ) {
-      return { backgroundColor: DARK_YELLOW };
-    }
-  }
-
-  const singleLetterAnimation = (letterPosition: number) => {
     Animated.timing(
-      flipAnimationValue,
+      flipAnimationValues[letterIndex],
       {
-        toValue: 60,
-        duration: 4000,
+        toValue: 1,
+        duration: 1000,
         useNativeDriver: true
       }
-    ).start()
+    ).start(({ finished }) => {
+      if (finished) {
+        if (correctWord.includes(letter) && correctWord[letterIndex] === letter) {
+          backgroundColor = GREEN;
+        } else if (
+          correctWord.includes(letter) &&
+          correctWord[letterIndex] !== letter
+        ) {
+          backgroundColor = DARK_YELLOW;
+        }
+      }
+    })
+
+    return { backgroundColor }
+  }
+
+  const animatedTiming = (letterIndex: number, toValue: number) => {
+    return Animated.timing(
+      flipAnimationValues[letterIndex],
+      {
+        toValue,
+        duration: 1000,
+        useNativeDriver: true
+      })
+  }
+
+  const singleLetterAnimation = (letterIndex: number): any => {
+    if (letterIndex > 4) return;
+
+    for (let i = 0; i <= letterBackgrounds.length - 1; i++) {
+      animatedTiming(letterIndex, 1).start(({ finished }) => {
+        if (finished) {
+          const { correctWord, guessNumber } = storeState;
+  
+          setLetterBackgrounds((prevBackgrounds) => {
+            const prevBackgroundsCopy = prevBackgrounds.slice();
+            const letter = wordState[letterIndex]
+  
+            if (
+              correctWord.includes(letter) && 
+              correctWord[letterIndex] === letter) {
+
+              prevBackgroundsCopy[letterIndex] = GREEN;
+            } else if (
+              correctWord.includes(letter) && 
+              correctWord[letterIndex] !== letter) {
+              
+              prevBackgroundsCopy[letterIndex] = DARK_YELLOW;
+            }
+
+            return prevBackgroundsCopy;
+          });
+        }
+      });
+    }
   }
 
   const triggerGuessAnimation = () => {
@@ -88,13 +129,13 @@ const WordRow = (props: { row: number }) => {
 
     if ((guessNumber - 1) === row) {
       console.log('triggerGuessAnimation', guessNumber);
-      singleLetterAnimation(1)
+      singleLetterAnimation(0)
     }
   }
 
   useEffect(() => {
     const { letterPosition, enteredLetter, guessNumber } = storeState;
-
+    console.log(letterPosition, currentLetterPosition)
     if (props.row === guessNumber && letterPosition > currentLetterPosition) {
       updateWord(letterPosition, 'ADD', enteredLetter);
     } else if (props.row === guessNumber && letterPosition < currentLetterPosition) {
@@ -106,18 +147,24 @@ const WordRow = (props: { row: number }) => {
     const { guessNumber } = storeState;
 
     triggerGuessAnimation();
-  }, [storeState.guessNumber])
+  }, [storeState.guessNumber]);
 
   return (
     <View style={container}>
-      <Animated.View style={{ transform: [{ scaleX: flipAnimationValue }] }}>
+      <Animated.View style={{ 
+        transform: [{
+          rotateX: flipAnimationValues[0].interpolate({
+            inputRange: [0, 2],
+            outputRange: ['0deg', '360deg']
+          })
+        }] }}>
         <TextInput
-          value={wordState.firstLetter}
+          value={wordState[0]}
           textAlign="center"
           caretHidden={true}
           style={[
             letterBoxStyle, 
-            setLetterBackground(wordState.firstLetter, 0)
+            { backgroundColor: letterBackgrounds[0] }
           ]}
           maxLength={1}
           editable={false}
@@ -125,37 +172,37 @@ const WordRow = (props: { row: number }) => {
       </Animated.View>
 
       <TextInput
-        value={wordState.secondLetter}
+        value={wordState[1]}
         textAlign="center"
         caretHidden={true}
-        style={[letterBoxStyle, setLetterBackground(wordState.secondLetter, 1)]}
+        style={[letterBoxStyle, { backgroundColor: letterBackgrounds[1] }]}
         maxLength={1}
         editable={false}
       />
 
       <TextInput
-        value={wordState.thirdLetter}
+        value={wordState[2]}
         textAlign="center"
         caretHidden={true}
-        style={[letterBoxStyle, setLetterBackground(wordState.thirdLetter, 2)]}
+        style={[letterBoxStyle, { backgroundColor: letterBackgrounds[2] }]}
         maxLength={1}
         editable={false}
       />
 
       <TextInput
-        value={wordState.fourthLetter}
+        value={wordState[3]}
         textAlign="center"
         caretHidden={true}
-        style={[letterBoxStyle, setLetterBackground(wordState.fourthLetter, 3)]}
+        style={[letterBoxStyle, { backgroundColor: letterBackgrounds[3] }]}
         maxLength={1}
         editable={false}
       />
 
       <TextInput
-        value={wordState.fifthLetter}
+        value={wordState[4]}
         textAlign="center"
         caretHidden={true}
-        style={[letterBoxStyle, setLetterBackground(wordState.fifthLetter, 4)]}
+        style={[letterBoxStyle, { backgroundColor: letterBackgrounds[4] }]}
         maxLength={1}
         editable={false}
       />
