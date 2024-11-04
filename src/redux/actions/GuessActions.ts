@@ -37,6 +37,8 @@ export const removeLetter = () => {
   return (dispatch: any, getStore: GetStore) => {
     const { letterPosition: currentLetterPos, currentWord } =
       getStore().letters;
+
+      console.log('currentWord??', currentWord)
     if (currentLetterPos > 0) {
       dispatch({
         type: REMOVE_LETTER,
@@ -92,7 +94,7 @@ export const guessWord = () => {
         type: GO_TO_NEXT_ROW,
         payload: {
           guessNumber: currentGuessNumber + 1,
-          letterPosition: 0,
+          letterPosition: -1,
           currentWord: '',
         },
       });
