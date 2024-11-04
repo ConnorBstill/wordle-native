@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Animated, View, StyleSheet, TextInput } from 'react-native';
 
-import { useAppDispatch, useAppSelector } from '../../redux/Hooks';
+import { useAppSelector } from '../../redux/Hooks';
 
 import { WHITE, DARK_GRAY, GREEN, DARK_YELLOW, BLACK } from '../../colors';
 
@@ -10,7 +10,11 @@ const WordRow = (props: { row: number }) => {
   const [wordState, setWordState] = useState(['', '', '', '', '']);
 
   const [letterBackgrounds, setLetterBackgrounds] = useState([
-    BLACK, BLACK, BLACK, BLACK, BLACK
+    BLACK,
+    BLACK,
+    BLACK,
+    BLACK,
+    BLACK,
   ]);
 
   const flipAnimationValues = useRef([
@@ -18,7 +22,7 @@ const WordRow = (props: { row: number }) => {
     new Animated.Value(0),
     new Animated.Value(0),
     new Animated.Value(0),
-    new Animated.Value(0)
+    new Animated.Value(0),
   ]).current;
 
   const storeState = useAppSelector((state) => state.letters);
@@ -52,50 +56,45 @@ const WordRow = (props: { row: number }) => {
   };
 
   const animatedFlipTiming = (letterIndex: number, toValue: number) => {
-    return Animated.timing(
-      flipAnimationValues[letterIndex],
-      {
-        toValue,
-        duration: 175,
-        useNativeDriver: true
-      })
-  }
+    return Animated.timing(flipAnimationValues[letterIndex], {
+      toValue,
+      duration: 175,
+      useNativeDriver: true,
+    });
+  };
 
   // Animates each letter sequentially after a guess
   const startLetterAnimation = (letterIndex: number): any => {
     if (letterIndex > 4) return;
 
     // Rotate halfway
-    animatedFlipTiming(letterIndex, 1)
-      .start(({ finished }) => {
-        if (finished) {
-          const { correctWord } = storeState;
+    animatedFlipTiming(letterIndex, 1).start(({ finished }) => {
+      if (finished) {
+        const { correctWord } = storeState;
 
-          setLetterBackgrounds((prevBackgrounds) => {
-            const prevBackgroundsCopy = prevBackgrounds.slice();
-            const letter = wordState[letterIndex];
-            const includesLetter = correctWord.includes(letter);
+        setLetterBackgrounds((prevBackgrounds) => {
+          const prevBackgroundsCopy = prevBackgrounds.slice();
+          const letter = wordState[letterIndex];
+          const includesLetter = correctWord.includes(letter);
 
-            if (includesLetter && correctWord[letterIndex] === letter) {
+          if (includesLetter && correctWord[letterIndex] === letter) {
+            prevBackgroundsCopy[letterIndex] = GREEN;
+          } else if (includesLetter && correctWord[letterIndex] !== letter) {
+            prevBackgroundsCopy[letterIndex] = DARK_YELLOW;
+          }
 
-              prevBackgroundsCopy[letterIndex] = GREEN;
-            } else if (includesLetter && correctWord[letterIndex] !== letter) {
-              
-              prevBackgroundsCopy[letterIndex] = DARK_YELLOW;
-            }
+          if (!includesLetter) prevBackgroundsCopy[letterIndex] = DARK_GRAY;
 
-            if (!includesLetter) prevBackgroundsCopy[letterIndex] = DARK_GRAY
+          return prevBackgroundsCopy;
+        });
 
-            return prevBackgroundsCopy;
-          });
-
-          // Rotate back after setting background color
-          animatedFlipTiming(letterIndex, 0).start(({ finished }) => {
-            if (finished) startLetterAnimation(letterIndex + 1);
-          });
-        }
+        // Rotate back after setting background color
+        animatedFlipTiming(letterIndex, 0).start(({ finished }) => {
+          if (finished) startLetterAnimation(letterIndex + 1);
+        });
+      }
     });
-  }
+  };
 
   useEffect(() => {
     const { letterPosition, enteredLetter, guessNumber } = storeState;
@@ -112,39 +111,45 @@ const WordRow = (props: { row: number }) => {
     const { guessNumber } = storeState;
     const { row } = props;
 
-    if ((guessNumber - 1) === row) startLetterAnimation(0);
+    if (guessNumber - 1 === row) startLetterAnimation(0);
   }, [storeState.guessNumber]);
 
   return (
     <View style={container}>
-      <Animated.View style={{
-        transform: [{
-          rotateX: flipAnimationValues[0].interpolate({
-            inputRange: [0, 2],
-            outputRange: ['0deg', '180deg']
-          })
-          // scaleX: flipAnimationValues[0]
-        }] }}>
+      <Animated.View
+        style={{
+          transform: [
+            {
+              rotateX: flipAnimationValues[0].interpolate({
+                inputRange: [0, 2],
+                outputRange: ['0deg', '180deg'],
+              }),
+            },
+          ],
+        }}
+      >
         <TextInput
           value={wordState[0]}
           textAlign="center"
           caretHidden={true}
-          style={[
-            letterInputStyle, 
-            { backgroundColor: letterBackgrounds[0] }
-          ]}
+          style={[letterInputStyle, { backgroundColor: letterBackgrounds[0] }]}
           maxLength={1}
           editable={false}
         />
       </Animated.View>
-      
-      <Animated.View style={{
-        transform: [{
-          rotateX: flipAnimationValues[1].interpolate({
-            inputRange: [0, 2],
-            outputRange: ['0deg', '180deg']
-          })
-        }] }}>
+
+      <Animated.View
+        style={{
+          transform: [
+            {
+              rotateX: flipAnimationValues[1].interpolate({
+                inputRange: [0, 2],
+                outputRange: ['0deg', '180deg'],
+              }),
+            },
+          ],
+        }}
+      >
         <TextInput
           value={wordState[1]}
           textAlign="center"
@@ -154,14 +159,19 @@ const WordRow = (props: { row: number }) => {
           editable={false}
         />
       </Animated.View>
-      
-      <Animated.View style={{
-        transform: [{
-          rotateX: flipAnimationValues[2].interpolate({
-            inputRange: [0, 2],
-            outputRange: ['0deg', '180deg']
-          })
-        }] }}>
+
+      <Animated.View
+        style={{
+          transform: [
+            {
+              rotateX: flipAnimationValues[2].interpolate({
+                inputRange: [0, 2],
+                outputRange: ['0deg', '180deg'],
+              }),
+            },
+          ],
+        }}
+      >
         <TextInput
           value={wordState[2]}
           textAlign="center"
@@ -171,15 +181,19 @@ const WordRow = (props: { row: number }) => {
           editable={false}
         />
       </Animated.View>
-      
 
-      <Animated.View style={{
-        transform: [{
-          rotateX: flipAnimationValues[3].interpolate({
-            inputRange: [0, 2],
-            outputRange: ['0deg', '180deg']
-          })
-        }] }}>
+      <Animated.View
+        style={{
+          transform: [
+            {
+              rotateX: flipAnimationValues[3].interpolate({
+                inputRange: [0, 2],
+                outputRange: ['0deg', '180deg'],
+              }),
+            },
+          ],
+        }}
+      >
         <TextInput
           value={wordState[3]}
           textAlign="center"
@@ -189,14 +203,19 @@ const WordRow = (props: { row: number }) => {
           editable={false}
         />
       </Animated.View>
-      
-      <Animated.View style={{
-        transform: [{
-          rotateX: flipAnimationValues[4].interpolate({
-            inputRange: [0, 2],
-            outputRange: ['0deg', '180deg']
-          })
-        }] }}>
+
+      <Animated.View
+        style={{
+          transform: [
+            {
+              rotateX: flipAnimationValues[4].interpolate({
+                inputRange: [0, 2],
+                outputRange: ['0deg', '180deg'],
+              }),
+            },
+          ],
+        }}
+      >
         <TextInput
           value={wordState[4]}
           textAlign="center"
@@ -224,7 +243,7 @@ const styles = StyleSheet.create({
     height: 64,
     margin: 3,
     fontFamily: 'Helvetica',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 });
 

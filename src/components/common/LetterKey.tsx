@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/Hooks';
 
 import {
@@ -31,7 +30,6 @@ const LetterKey = ({ title }: { title: string }) => {
   };
 
   const setKeyBackground = () => {
-    // const { correctWord, guessNumber } = storeState;
     let color = GRAY;
 
     guessedWords.forEach((word: string) => {

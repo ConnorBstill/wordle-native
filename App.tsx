@@ -12,7 +12,6 @@ import { StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
 import Toolbar from './src/components/Toolbar';
 import WordGuesses from './src/components/WordGuesses';
 import KeyboardSection from './src/components/KeyboardSection';
-import ScreenModal from './src/components/common/ScreenModal';
 
 import * as COLORS from './src/colors';
 
@@ -21,8 +20,7 @@ export default function App() {
     container, 
     fullContainer, 
     contentContainer,
-    guessesContainer,
-    keyBoardContainer
+    guessesContainer
   } = styles;
 
   const [fontsLoaded] = useFonts({
@@ -60,13 +58,11 @@ export default function App() {
                 <WordGuesses />
               </View>
 
-              <View style={keyBoardContainer}>
+              <View>
                 <KeyboardSection />
               </View>
             </View>
           </View>
-
-          {/* <ScreenModal /> */}
         </SafeAreaView>
       </Provider>
     </RootSiblingParent>
@@ -93,8 +89,5 @@ const styles = StyleSheet.create({
   guessesContainer: {
     alignContent: 'center',
     justifyContent: 'center',
-  },
-  keyBoardContainer: {
-    // backgroundColor: 'red'
   }
 });

@@ -1,10 +1,8 @@
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Icon } from 'react-native-elements';
 
 import * as COLORS from '../colors';
 
-const Toolbar = (props: any) => {
+const Toolbar = () => {
   return (
     <View style={styles.containerStyle}>
       <View>

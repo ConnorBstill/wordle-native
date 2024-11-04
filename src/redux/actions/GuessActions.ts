@@ -6,7 +6,7 @@ import {
   GUESS_WORD,
   GO_TO_NEXT_ROW,
   REMOVE_LETTER,
-  ANIMATE_GUESS
+  ANIMATE_GUESS,
 } from './types';
 import { State } from '../reducers/LetterReducer';
 
@@ -18,17 +18,15 @@ interface GetStore {
 
 export const inputLetter = (letter: string) => {
   return (dispatch: any, getStore: GetStore) => {
-    const {
-      letterPosition: currentLetterPos,
-      currentWord,
-    } = getStore().letters;
+    const { letterPosition: currentLetterPos, currentWord } =
+      getStore().letters;
 
     if (currentLetterPos < 4) {
       const newWord = currentWord + letter;
 
-      dispatch({ 
-        type: CHANGE_FOCUSED_INPUT, 
-        payload: currentLetterPos < 0 ? 0 : currentLetterPos + 1 
+      dispatch({
+        type: CHANGE_FOCUSED_INPUT,
+        payload: currentLetterPos < 0 ? 0 : currentLetterPos + 1,
       });
       dispatch({ type: INPUT_LETTER, payload: { newWord, letter } });
     }
@@ -86,9 +84,9 @@ export const guessWord = () => {
     dispatch({
       type: ANIMATE_GUESS,
       payload: {
-        guessNumber: currentGuessNumber
-      }
-    })
+        guessNumber: currentGuessNumber,
+      },
+    });
 
     if (currentGuessNumber < 6) {
       dispatch({
