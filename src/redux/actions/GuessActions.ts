@@ -21,13 +21,15 @@ export const inputLetter = (letter: string) => {
     const {
       letterPosition: currentLetterPos,
       currentWord,
-      guessNumber,
     } = getStore().letters;
 
     if (currentLetterPos < 4) {
       const newWord = currentWord + letter;
-      console.log('currentLetterPos', currentLetterPos)
-      dispatch({ type: CHANGE_FOCUSED_INPUT, payload: currentLetterPos + 1 });
+
+      dispatch({ 
+        type: CHANGE_FOCUSED_INPUT, 
+        payload: currentLetterPos < 0 ? 0 : currentLetterPos + 1 
+      });
       dispatch({ type: INPUT_LETTER, payload: { newWord, letter } });
     }
   };
@@ -38,8 +40,7 @@ export const removeLetter = () => {
     const { letterPosition: currentLetterPos, currentWord } =
       getStore().letters;
 
-      console.log('currentWord??', currentWord)
-    if (currentLetterPos > 0) {
+    if (currentLetterPos > -1) {
       dispatch({
         type: REMOVE_LETTER,
         payload: {

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/Hooks';
 import { WHITE, DARK_GRAY, GREEN, DARK_YELLOW, BLACK } from '../../colors';
 
 const WordRow = (props: { row: number }) => {
-  const [currentLetterPosition, setCurrentLetterPosition] = useState(0);
+  const [currentLetterPosition, setCurrentLetterPosition] = useState(-1);
   const [wordState, setWordState] = useState(['', '', '', '', '']);
 
   const [letterBackgrounds, setLetterBackgrounds] = useState([
@@ -21,16 +21,7 @@ const WordRow = (props: { row: number }) => {
     new Animated.Value(0)
   ]).current;
 
-  // const flipAnimationValues = useRef([
-  //   new Animated.Value(1),
-  //   new Animated.Value(1),
-  //   new Animated.Value(1),
-  //   new Animated.Value(1),
-  //   new Animated.Value(1)
-  // ]).current;
-
   const storeState = useAppSelector((state) => state.letters);
-
 
   const { container, letterInputStyle } = styles;
 
@@ -44,23 +35,23 @@ const WordRow = (props: { row: number }) => {
         const prevWordCopy = prevWord.slice();
 
         prevWordCopy[letterPosition] = enteredLetter;
+        setCurrentLetterPosition((preLetterPosition) => preLetterPosition + 1);
 
         return prevWordCopy;
       });
-    } else {
+    } else if (action === 'REMOVE') {
       setWordState((prevWord) => {
         const prevWordCopy = prevWord.slice();
 
         prevWordCopy[letterPosition] = '';
+        setCurrentLetterPosition((preLetterPosition) => preLetterPosition - 1);
 
         return prevWordCopy;
       });
     }
-
-    setCurrentLetterPosition(letterPosition);
   };
 
-  const animatedTiming = (letterIndex: number, toValue: number) => {
+  const animatedFlipTiming = (letterIndex: number, toValue: number) => {
     return Animated.timing(
       flipAnimationValues[letterIndex],
       {
@@ -70,10 +61,12 @@ const WordRow = (props: { row: number }) => {
       })
   }
 
+  // Animates each letter sequentially after a guess
   const startLetterAnimation = (letterIndex: number): any => {
     if (letterIndex > 4) return;
 
-    animatedTiming(letterIndex, 1)
+    // Rotate halfway
+    animatedFlipTiming(letterIndex, 1)
       .start(({ finished }) => {
         if (finished) {
           const { correctWord } = storeState;
@@ -81,28 +74,24 @@ const WordRow = (props: { row: number }) => {
           setLetterBackgrounds((prevBackgrounds) => {
             const prevBackgroundsCopy = prevBackgrounds.slice();
             const letter = wordState[letterIndex];
+            const includesLetter = correctWord.includes(letter);
 
-            if (
-              correctWord.includes(letter) && 
-              correctWord[letterIndex] === letter) {
+            if (includesLetter && correctWord[letterIndex] === letter) {
 
               prevBackgroundsCopy[letterIndex] = GREEN;
-            } else if (
-              correctWord.includes(letter) && 
-              correctWord[letterIndex] !== letter) {
+            } else if (includesLetter && correctWord[letterIndex] !== letter) {
               
               prevBackgroundsCopy[letterIndex] = DARK_YELLOW;
             }
 
-            if (!correctWord.includes(letter)) prevBackgroundsCopy[letterIndex] = DARK_GRAY
+            if (!includesLetter) prevBackgroundsCopy[letterIndex] = DARK_GRAY
 
             return prevBackgroundsCopy;
           });
 
-          animatedTiming(letterIndex, 0).start(({ finished }) => {
-            if (finished) {
-              startLetterAnimation(letterIndex + 1);
-            }
+          // Rotate back after setting background color
+          animatedFlipTiming(letterIndex, 0).start(({ finished }) => {
+            if (finished) startLetterAnimation(letterIndex + 1);
           });
         }
     });
@@ -115,7 +104,7 @@ const WordRow = (props: { row: number }) => {
     if (row === guessNumber && letterPosition > currentLetterPosition) {
       updateWord(letterPosition, 'ADD', enteredLetter);
     } else if (row === guessNumber && letterPosition < currentLetterPosition) {
-      updateWord(letterPosition, 'REMOVE');
+      updateWord(letterPosition + 1, 'REMOVE');
     }
   }, [storeState.letterPosition]);
 
