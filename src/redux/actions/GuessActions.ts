@@ -19,8 +19,7 @@ interface GetStore {
 
 export const inputLetter = (letter: string) => {
   return (dispatch: any, getStore: GetStore) => {
-    const { letterPosition: currentLetterPos, currentWord } =
-      getStore().letters;
+    const { letterPosition: currentLetterPos, currentWord } = getStore().letters;
 
     if (currentLetterPos < 4) {
       const newWord = currentWord + letter;
@@ -36,8 +35,7 @@ export const inputLetter = (letter: string) => {
 
 export const removeLetter = () => {
   return (dispatch: any, getStore: GetStore) => {
-    const { letterPosition: currentLetterPos, currentWord } =
-      getStore().letters;
+    const { letterPosition: currentLetterPos, currentWord } = getStore().letters;
 
     if (currentLetterPos > -1) {
       dispatch({
@@ -103,10 +101,7 @@ export const guessWord = () => {
         type: GUESS_WORD,
         payload: {
           guessedWords: [...guessedWords, currentWord],
-          guessedLetters: [
-            ...currentGuessedLetters,
-            [...currentWord.split('')],
-          ],
+          guessedLetters: [...currentGuessedLetters, [...currentWord.split('')]],
         },
       });
     }

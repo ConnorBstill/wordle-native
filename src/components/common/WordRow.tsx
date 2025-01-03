@@ -3,18 +3,24 @@ import { Animated, View, StyleSheet, TextInput } from 'react-native';
 
 import { useAppSelector } from '../../redux/Hooks';
 
-import { WHITE, DARK_GRAY, GREEN, DARK_YELLOW, BLACK } from '../../colors';
+import {
+  WHITE_COLOR,
+  DARK_GRAY,
+  GREEN_COLOR,
+  DARK_YELLOW,
+  BLACK_COLOR,
+} from '../../colors';
 
 const WordRow = (props: { row: number }) => {
   const [currentLetterPosition, setCurrentLetterPosition] = useState(-1);
   const [wordState, setWordState] = useState(['', '', '', '', '']);
 
   const [letterBackgrounds, setLetterBackgrounds] = useState([
-    BLACK,
-    BLACK,
-    BLACK,
-    BLACK,
-    BLACK,
+    BLACK_COLOR,
+    BLACK_COLOR,
+    BLACK_COLOR,
+    BLACK_COLOR,
+    BLACK_COLOR,
   ]);
 
   const flipAnimationValues = useRef([
@@ -29,11 +35,7 @@ const WordRow = (props: { row: number }) => {
 
   const { container, letterInputStyle } = styles;
 
-  const updateWord = (
-    letterPosition: number,
-    action: string,
-    enteredLetter?: string
-  ) => {
+  const updateWord = (letterPosition: number, action: string, enteredLetter?: string) => {
     if (action === 'ADD' && enteredLetter) {
       setWordState((prevWord) => {
         const prevWordCopy = prevWord.slice();
@@ -78,7 +80,7 @@ const WordRow = (props: { row: number }) => {
           const includesLetter = correctWord.includes(letter);
 
           if (includesLetter && correctWord[letterIndex] === letter) {
-            prevBackgroundsCopy[letterIndex] = GREEN;
+            prevBackgroundsCopy[letterIndex] = GREEN_COLOR;
           } else if (includesLetter && correctWord[letterIndex] !== letter) {
             prevBackgroundsCopy[letterIndex] = DARK_YELLOW;
           }
@@ -235,7 +237,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   letterInputStyle: {
-    color: WHITE,
+    color: WHITE_COLOR,
     fontSize: 38,
     borderColor: DARK_GRAY,
     borderWidth: 2,

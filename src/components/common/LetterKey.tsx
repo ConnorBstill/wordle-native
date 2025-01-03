@@ -1,23 +1,52 @@
-import { useAppDispatch, useAppSelector } from '../../redux/Hooks';
-
-import {
-  inputLetter,
-  removeLetter,
-  guessWord,
-} from '../../redux/actions/GuessActions';
-
+import { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@rneui/themed';
 
-import { WHITE_COLOR, GREEN_COLOR, DARK_YELLOW, GRAY_COLOR, DARK_GRAY } from '../../colors';
+import { useAppDispatch, useAppSelector } from '../../redux/Hooks';
+import { inputLetter, removeLetter, guessWord } from '../../redux/actions/GuessActions';
 
-const LetterKey = ({ title }: { title: string }) => {
-  const { guessedLetters, correctWord, guessedWords } = useAppSelector(
-    (state) => state.letters
-  );
-  const { buttonStyle, letterStyle } = styles;
+import {
+  WHITE_COLOR,
+  GREEN_COLOR,
+  DARK_YELLOW,
+  GRAY_COLOR,
+  DARK_GRAY,
+} from '../../colors';
 
+interface LetterKeyProps {
+  title: string;
+}
+
+const LetterKey = ({ title }: LetterKeyProps) => {
+  const { correctWord, guessedWords } = useAppSelector((state) => state.letters);
   const dispatch = useAppDispatch();
+
+  const setKeyBackground = () => {
+    let color = GRAY_COLOR;
+    const letterInCorrectWord = correctWord.indexOf(title) !== -1;
+
+    guessedWords.forEach((word: string) => {
+      const letterInCorrectSpot = correctWord.indexOf(title) === word.indexOf(title);
+      const letterGuessed = word.indexOf(title) !== -1;
+
+      if (letterInCorrectWord && letterInCorrectSpot) {
+        color = GREEN_COLOR;
+      } else if (letterGuessed && letterInCorrectWord && !letterInCorrectSpot) {
+        color = DARK_YELLOW;
+      } else if (letterGuessed && !letterInCorrectWord) {
+        color = DARK_GRAY;
+      }
+    });
+
+    return { backgroundColor: color };
+  };
+
+  const keyBackground = useMemo<{ backgroundColor: string }>(
+    () => setKeyBackground(),
+    [guessedWords.length]
+  );
+
+  const { buttonStyle, letterStyle } = styles;
 
   const handlePress = () => {
     if (title === 'backspace-outline') {
@@ -27,32 +56,6 @@ const LetterKey = ({ title }: { title: string }) => {
     } else {
       dispatch(inputLetter(title));
     }
-  };
-
-  const setKeyBackground = () => {
-    let color = GRAY_COLOR;
-
-    guessedWords.forEach((word: string) => {
-      if (
-        correctWord.indexOf(title) !== -1 &&
-        correctWord.indexOf(title) === word.indexOf(title)
-      ) {
-        color = GREEN_COLOR;
-      } else if (
-        word.indexOf(title) !== -1 &&
-        correctWord.indexOf(title) !== -1 &&
-        correctWord.indexOf(title) !== word.indexOf(title)
-      ) {
-        color = DARK_YELLOW;
-      } else if (
-        word.indexOf(title) !== -1 &&
-        correctWord.indexOf(title) === -1
-      ) {
-        color = DARK_GRAY;
-      }
-    });
-
-    return { backgroundColor: color };
   };
 
   const setKeyWidth = () => {
@@ -71,7 +74,7 @@ const LetterKey = ({ title }: { title: string }) => {
     <View>
       <TouchableOpacity
         onPress={() => handlePress()}
-        style={[{ ...buttonStyle, ...setKeyWidth() }, setKeyBackground()]}
+        style={[{ ...buttonStyle, ...setKeyWidth() }, keyBackground]}
       >
         {renderLabel()}
       </TouchableOpacity>
