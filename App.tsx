@@ -13,7 +13,7 @@ import Toolbar from './src/components/Toolbar';
 import WordGuesses from './src/components/WordGuesses';
 import KeyboardSection from './src/components/KeyboardSection';
 
-import * as COLORS from './src/colors';
+import { BLACK_COLOR } from './src/colors';
 
 export default function App() {
   const { 
@@ -72,7 +72,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.BLACK,
+    backgroundColor: BLACK_COLOR,
   },
   fullContainer: {
     marginTop: StatusBar.currentHeight,

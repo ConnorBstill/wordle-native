@@ -11,6 +11,7 @@ import {
 import { State } from '../reducers/LetterReducer';
 
 import { WORDS } from '../../constants/words';
+import { BLACK_COLOR, WHITE_COLOR } from '../../colors';
 
 interface GetStore {
   (): { letters: State };
@@ -116,7 +117,7 @@ const showToast = (text: string) => {
   Toast.show(text, {
     duration: 3250,
     position: 50,
-    backgroundColor: '#fff',
-    textColor: '#000',
+    backgroundColor: BLACK_COLOR,
+    textColor: WHITE_COLOR,
   });
 };

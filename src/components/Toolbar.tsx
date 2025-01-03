@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
 
-import * as COLORS from '../colors';
+import { DARK_GRAY, WHITE_COLOR } from '../colors';
 
 const Toolbar = () => {
   return (
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   containerStyle: {
     width: '100%',
     height: 50,
-    borderBottomColor: '#3a3a3c',
+    borderBottomColor: DARK_GRAY,
     borderBottomWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   titleStyle: {
-    color: COLORS.WHITE,
+    color: WHITE_COLOR,
     fontSize: 28,
     fontFamily: 'Karnak',
   },

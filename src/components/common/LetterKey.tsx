@@ -9,7 +9,7 @@ import {
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@rneui/themed';
 
-import { WHITE, GREEN, DARK_YELLOW, GRAY, DARK_GRAY } from '../../colors';
+import { WHITE_COLOR, GREEN_COLOR, DARK_YELLOW, GRAY_COLOR, DARK_GRAY } from '../../colors';
 
 const LetterKey = ({ title }: { title: string }) => {
   const { guessedLetters, correctWord, guessedWords } = useAppSelector(
@@ -30,14 +30,14 @@ const LetterKey = ({ title }: { title: string }) => {
   };
 
   const setKeyBackground = () => {
-    let color = GRAY;
+    let color = GRAY_COLOR;
 
     guessedWords.forEach((word: string) => {
       if (
         correctWord.indexOf(title) !== -1 &&
         correctWord.indexOf(title) === word.indexOf(title)
       ) {
-        color = GREEN;
+        color = GREEN_COLOR;
       } else if (
         word.indexOf(title) !== -1 &&
         correctWord.indexOf(title) !== -1 &&
@@ -61,7 +61,7 @@ const LetterKey = ({ title }: { title: string }) => {
 
   const renderLabel = () => {
     if (title === 'backspace-outline') {
-      return <Icon name={title} type="ionicon" color={WHITE} />;
+      return <Icon name={title} type="ionicon" color={WHITE_COLOR} />;
     } else {
       return <Text style={letterStyle}>{title}</Text>;
     }
@@ -81,7 +81,7 @@ const LetterKey = ({ title }: { title: string }) => {
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    backgroundColor: '#818384',
+    backgroundColor: GRAY_COLOR,
     height: 58,
     borderRadius: 4,
     justifyContent: 'center',
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
   widerButton: {},
   letterStyle: {
-    color: '#fff',
+    color: WHITE_COLOR,
     fontFamily: 'Helvetica',
     fontWeight: 'bold',
   },

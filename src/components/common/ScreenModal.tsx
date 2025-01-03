@@ -1,10 +1,12 @@
 import { Modal, Text, View, StyleSheet } from 'react-native';
 
+import { WHITE_COLOR } from '../../colors';
+
 const ScreenModal = (props: { visible: boolean }) => {
   return (
     <Modal visible={props.visible} transparent={true}>
       <View style={styles.innerContainerStyles}>
-        <Text>MODALLL</Text>
+        <Text>MODAL</Text>
       </View>
     </Modal>
   );
@@ -18,7 +20,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
   },
   innerContainerStyles: {
-    backgroundColor: '#fff',
+    backgroundColor: WHITE_COLOR,
     justifyContent: 'center',
     alignItems: 'center',
     width: '50%',
