@@ -13,14 +13,14 @@ import {
 
 const WordRow = (props: { row: number }) => {
   const [currentLetterPosition, setCurrentLetterPosition] = useState(-1);
-  const [wordState, setWordState] = useState(['', '', '', '', '']);
+  const [wordState, setWordState] = useState<string>('');
 
   const [letterBackgrounds, setLetterBackgrounds] = useState([
-    BLACK_COLOR,
-    BLACK_COLOR,
-    BLACK_COLOR,
-    BLACK_COLOR,
-    BLACK_COLOR,
+    { id: 1, color: BLACK_COLOR },
+    { id: 2, color: BLACK_COLOR },
+    { id: 3, color: BLACK_COLOR },
+    { id: 4, color: BLACK_COLOR },
+    { id: 5, color: BLACK_COLOR }
   ]);
 
   const flipAnimationValues = useRef([
@@ -35,26 +35,18 @@ const WordRow = (props: { row: number }) => {
 
   const { container, letterInputStyle } = styles;
 
-  const updateWord = (letterPosition: number, action: string, enteredLetter?: string) => {
-    if (action === 'ADD' && enteredLetter) {
-      setWordState((prevWord) => {
-        const prevWordCopy = prevWord.slice();
+  const updateWord = (
+    letterPosition: number, 
+    wordLengthDiff: number, 
+    prevWord: string,  
+    enteredLetter: string = ''
+  ) => {
+    const prevWordCopy = prevWord.split('');
 
-        prevWordCopy[letterPosition] = enteredLetter;
-        setCurrentLetterPosition((preLetterPosition) => preLetterPosition + 1);
+    prevWordCopy[letterPosition] = enteredLetter;
+    setCurrentLetterPosition((prevLetterPosition) => prevLetterPosition + wordLengthDiff);
 
-        return prevWordCopy;
-      });
-    } else if (action === 'REMOVE') {
-      setWordState((prevWord) => {
-        const prevWordCopy = prevWord.slice();
-
-        prevWordCopy[letterPosition] = '';
-        setCurrentLetterPosition((preLetterPosition) => preLetterPosition - 1);
-
-        return prevWordCopy;
-      });
-    }
+    return prevWordCopy.join('');
   };
 
   const animatedFlipTiming = (letterIndex: number, toValue: number) => {
@@ -80,17 +72,17 @@ const WordRow = (props: { row: number }) => {
           const includesLetter = correctWord.includes(letter);
 
           if (includesLetter && correctWord[letterIndex] === letter) {
-            prevBackgroundsCopy[letterIndex] = GREEN_COLOR;
+            prevBackgroundsCopy[letterIndex].color = GREEN_COLOR;
           } else if (includesLetter && correctWord[letterIndex] !== letter) {
-            prevBackgroundsCopy[letterIndex] = DARK_YELLOW;
+            prevBackgroundsCopy[letterIndex].color = DARK_YELLOW;
           }
 
-          if (!includesLetter) prevBackgroundsCopy[letterIndex] = DARK_GRAY;
+          if (!includesLetter) prevBackgroundsCopy[letterIndex].color = DARK_GRAY;
 
           return prevBackgroundsCopy;
         });
 
-        // Rotate back after setting background color
+        // Rotate back after setting background color and go to next letter
         animatedFlipTiming(letterIndex, 0).start(({ finished }) => {
           if (finished) startLetterAnimation(letterIndex + 1);
         });
@@ -103,9 +95,11 @@ const WordRow = (props: { row: number }) => {
     const { row } = props;
 
     if (row === guessNumber && letterPosition > currentLetterPosition) {
-      updateWord(letterPosition, 'ADD', enteredLetter);
+      // Add letter
+      setWordState(prevWord => updateWord(letterPosition, 1, prevWord, enteredLetter))
     } else if (row === guessNumber && letterPosition < currentLetterPosition) {
-      updateWord(letterPosition + 1, 'REMOVE');
+      // Remove letter
+      setWordState(prevWord => updateWord(letterPosition + 1, -1, prevWord))
     }
   }, [storeState.letterPosition]);
 
@@ -116,117 +110,36 @@ const WordRow = (props: { row: number }) => {
     if (guessNumber - 1 === row) startLetterAnimation(0);
   }, [storeState.guessNumber]);
 
+  const renderLetterInputs = () => {
+    return letterBackgrounds.map(({ id, color }, index) => (
+      <Animated.View
+        key={`${id}`}
+        style={{
+          transform: [
+            {
+              rotateX: flipAnimationValues[index].interpolate({
+                inputRange: [0, 2],
+                outputRange: ['0deg', '180deg'],
+              }),
+            },
+          ],
+        }}
+      >
+        <TextInput
+          value={wordState[index]}
+          textAlign="center"
+          caretHidden={true}
+          style={[letterInputStyle, { backgroundColor: color }]}
+          maxLength={1}
+          editable={false}
+        />
+      </Animated.View>
+    ))
+  }
+
   return (
     <View style={container}>
-      <Animated.View
-        style={{
-          transform: [
-            {
-              rotateX: flipAnimationValues[0].interpolate({
-                inputRange: [0, 2],
-                outputRange: ['0deg', '180deg'],
-              }),
-            },
-          ],
-        }}
-      >
-        <TextInput
-          value={wordState[0]}
-          textAlign="center"
-          caretHidden={true}
-          style={[letterInputStyle, { backgroundColor: letterBackgrounds[0] }]}
-          maxLength={1}
-          editable={false}
-        />
-      </Animated.View>
-
-      <Animated.View
-        style={{
-          transform: [
-            {
-              rotateX: flipAnimationValues[1].interpolate({
-                inputRange: [0, 2],
-                outputRange: ['0deg', '180deg'],
-              }),
-            },
-          ],
-        }}
-      >
-        <TextInput
-          value={wordState[1]}
-          textAlign="center"
-          caretHidden={true}
-          style={[letterInputStyle, { backgroundColor: letterBackgrounds[1] }]}
-          maxLength={1}
-          editable={false}
-        />
-      </Animated.View>
-
-      <Animated.View
-        style={{
-          transform: [
-            {
-              rotateX: flipAnimationValues[2].interpolate({
-                inputRange: [0, 2],
-                outputRange: ['0deg', '180deg'],
-              }),
-            },
-          ],
-        }}
-      >
-        <TextInput
-          value={wordState[2]}
-          textAlign="center"
-          caretHidden={true}
-          style={[letterInputStyle, { backgroundColor: letterBackgrounds[2] }]}
-          maxLength={1}
-          editable={false}
-        />
-      </Animated.View>
-
-      <Animated.View
-        style={{
-          transform: [
-            {
-              rotateX: flipAnimationValues[3].interpolate({
-                inputRange: [0, 2],
-                outputRange: ['0deg', '180deg'],
-              }),
-            },
-          ],
-        }}
-      >
-        <TextInput
-          value={wordState[3]}
-          textAlign="center"
-          caretHidden={true}
-          style={[letterInputStyle, { backgroundColor: letterBackgrounds[3] }]}
-          maxLength={1}
-          editable={false}
-        />
-      </Animated.View>
-
-      <Animated.View
-        style={{
-          transform: [
-            {
-              rotateX: flipAnimationValues[4].interpolate({
-                inputRange: [0, 2],
-                outputRange: ['0deg', '180deg'],
-              }),
-            },
-          ],
-        }}
-      >
-        <TextInput
-          value={wordState[4]}
-          textAlign="center"
-          caretHidden={true}
-          style={[letterInputStyle, { backgroundColor: letterBackgrounds[4] }]}
-          maxLength={1}
-          editable={false}
-        />
-      </Animated.View>
+      {renderLetterInputs()}
     </View>
   );
 };
