@@ -8,10 +8,6 @@ const Toolbar = () => {
       <View>
         <Text style={styles.titleStyle}>Wordle</Text>
       </View>
-
-      <View>
-        <Text>Icons here</Text>
-      </View>
     </View>
   );
 };

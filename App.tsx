@@ -1,14 +1,14 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useEffect, useCallback } from 'react';
+import { StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
-import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { useFonts } from 'expo-font';
 
 import { Store } from './src/redux/Store';
 
-import { StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
 import Toolbar from './src/components/Toolbar';
 import WordGuesses from './src/components/WordGuesses';
 import KeyboardSection from './src/components/KeyboardSection';
