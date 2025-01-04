@@ -59,7 +59,6 @@ export const guessWord = () => {
       currentWord,
       correctWord,
     } = getStore().letters;
-    const isLastGuess = currentGuessNumber === 6 && currentLetterPos === 5;
 
     if (currentWord === correctWord) {
       showToast('You did it!');
@@ -74,10 +73,10 @@ export const guessWord = () => {
       showToast('Not in word list');
       return;
     }
-
-    if (isLastGuess) {
+    console.log('currentGuessNumber', currentGuessNumber);
+    console.log('currentLetterPos', currentLetterPos);
+    if (currentGuessNumber === 6) {
       showToast(correctWord);
-      return;
     }
 
     dispatch({
@@ -87,7 +86,7 @@ export const guessWord = () => {
       },
     });
 
-    if (currentGuessNumber < 6) {
+    if (currentGuessNumber <= 6) {
       dispatch({
         type: GO_TO_NEXT_ROW,
         payload: {

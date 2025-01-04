@@ -20,7 +20,7 @@ const WordRow = (props: { row: number }) => {
     { id: 2, color: BLACK_COLOR },
     { id: 3, color: BLACK_COLOR },
     { id: 4, color: BLACK_COLOR },
-    { id: 5, color: BLACK_COLOR }
+    { id: 5, color: BLACK_COLOR },
   ]);
 
   const flipAnimationValues = useRef([
@@ -36,9 +36,9 @@ const WordRow = (props: { row: number }) => {
   const { container, letterInputStyle } = styles;
 
   const updateWord = (
-    letterPosition: number, 
-    wordLengthDiff: number, 
-    prevWord: string,  
+    letterPosition: number,
+    wordLengthDiff: number,
+    prevWord: string,
     enteredLetter: string = ''
   ) => {
     const prevWordCopy = prevWord.split('');
@@ -96,17 +96,17 @@ const WordRow = (props: { row: number }) => {
 
     if (row === guessNumber && letterPosition > currentLetterPosition) {
       // Add letter
-      setWordState(prevWord => updateWord(letterPosition, 1, prevWord, enteredLetter))
+      setWordState((prevWord) => updateWord(letterPosition, 1, prevWord, enteredLetter));
     } else if (row === guessNumber && letterPosition < currentLetterPosition) {
       // Remove letter
-      setWordState(prevWord => updateWord(letterPosition + 1, -1, prevWord))
+      setWordState((prevWord) => updateWord(letterPosition + 1, -1, prevWord));
     }
   }, [storeState.letterPosition]);
 
   useEffect(() => {
     const { guessNumber } = storeState;
     const { row } = props;
-
+    console.log('guessNumber', guessNumber);
     if (guessNumber - 1 === row) startLetterAnimation(0);
   }, [storeState.guessNumber]);
 
@@ -134,14 +134,10 @@ const WordRow = (props: { row: number }) => {
           editable={false}
         />
       </Animated.View>
-    ))
-  }
+    ));
+  };
 
-  return (
-    <View style={container}>
-      {renderLetterInputs()}
-    </View>
-  );
+  return <View style={container}>{renderLetterInputs()}</View>;
 };
 
 const styles = StyleSheet.create({
