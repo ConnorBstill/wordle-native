@@ -11,6 +11,7 @@ import { Provider as JotaiProvider } from 'jotai';
 import Toolbar from './src/components/Toolbar';
 import WordRow from './src/components/WordRow';
 import KeyboardSection from './src/components/KeyboardSection';
+import SettingsModal from './src/components/common/SettingsModal';
 
 import { BLACK_COLOR } from './src/colors';
 
@@ -67,6 +68,8 @@ export default function App() {
               </View>
             </View>
           </View>
+
+          <SettingsModal />
         </SafeAreaView>
       </JotaiProvider>
     </RootSiblingParent>

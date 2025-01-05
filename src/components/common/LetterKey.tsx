@@ -10,7 +10,8 @@ import {
   currentWordAtom,
   enteredLetterAtom,
   guessNumberAtom,
-  gameIsOverAtom
+  gameIsOverAtom,
+  gameIsStartedAtom,
 } from '../../jotai-store';
 
 import {
@@ -30,12 +31,13 @@ interface LetterKeyProps {
 
 const LetterKey = ({ keyTitle }: LetterKeyProps) => {
   const [correctWord] = useAtom(correctWordAtom);
-  const [gameIsOver, setGameIsOver] = useAtom(gameIsOverAtom)
+  const [gameIsOver, setGameIsOver] = useAtom(gameIsOverAtom);
   const [guessNumber, setGuessNumber] = useAtom(guessNumberAtom);
   const [guessedWords, setGuessedWords] = useAtom(guessedWordsAtom);
   const [letterPosition, setLetterPosition] = useAtom(letterPositionAtom);
   const [currentWord, setCurrentWord] = useAtom(currentWordAtom);
   const [enteredLetter, setEnteredLetter] = useAtom(enteredLetterAtom);
+  const [gameIsStarted, setGameIsStarted] = useAtom(gameIsStartedAtom);
 
   const setKeyBackground = () => {
     let color = GRAY_COLOR;
@@ -78,6 +80,7 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
       handleEnterPress();
     } else {
       if (letterPosition < 4) {
+        if (!gameIsStarted) setGameIsStarted(true);
         setLetterPosition((prevPosition) => prevPosition + 1);
         setEnteredLetter(keyTitle);
         setCurrentWord((prevWord) => prevWord + keyTitle);
