@@ -7,7 +7,7 @@ import {
   letterPositionAtom,
   guessNumberAtom,
   enteredLetterAtom,
-} from '../jotai';
+} from '../jotai-store';
 
 import { WHITE_COLOR, DARK_GRAY, GREEN_COLOR, DARK_YELLOW, BLACK_COLOR } from '../colors';
 
