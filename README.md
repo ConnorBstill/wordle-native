@@ -2,7 +2,7 @@
 
 A React Native clone of the word game Wordle!
 
-https://www.nytimes.com/games/wordle/index.html
+See the original here: https://www.nytimes.com/games/wordle/index.html
 
 # Project goals
 
