@@ -8,12 +8,14 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 
 import { Store } from './src/redux/Store';
+import { Provider as JotaiProvider, atom } from 'jotai';
 
 import Toolbar from './src/components/Toolbar';
-import WordGuesses from './src/components/WordGuesses';
+import WordRow from './src/components/WordRow';
 import KeyboardSection from './src/components/KeyboardSection';
 
 import { BLACK_COLOR } from './src/colors';
+import { WORD_OF_THE_DAY } from './src/lib/words';
 
 export default function App() {
   const { 
@@ -48,22 +50,29 @@ export default function App() {
   return (
     <RootSiblingParent>
       <Provider store={Store}>
-        <SafeAreaView style={container} onLayout={onLayoutRootView}>
-          <View style={fullContainer}>
-            <StatusBar barStyle='light-content' />
-            <Toolbar />
+        <JotaiProvider>
+          <SafeAreaView style={container} onLayout={onLayoutRootView}>
+            <View style={fullContainer}>
+              <StatusBar barStyle='light-content' />
+              <Toolbar />
 
-            <View style ={contentContainer}>
-              <View style={guessesContainer}>
-                <WordGuesses />
-              </View>
+              <View style ={contentContainer}>
+                <View style={guessesContainer}>
+                  <WordRow row={1} />
+                  <WordRow row={2} />
+                  <WordRow row={3} />
+                  <WordRow row={4} />
+                  <WordRow row={5} />
+                  <WordRow row={6} />
+                </View>
 
-              <View>
-                <KeyboardSection />
+                <View>
+                  <KeyboardSection />
+                </View>
               </View>
             </View>
-          </View>
-        </SafeAreaView>
+          </SafeAreaView>
+        </JotaiProvider>
       </Provider>
     </RootSiblingParent>
   );
@@ -83,10 +92,13 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     marginTop: 30,
+    width: '100%',
     alignContent: 'center',
     justifyContent: 'space-between',
   },
   guessesContainer: {
+    width: '100%',
+    // backgroundColor: 'red',
     alignContent: 'center',
     justifyContent: 'center',
   }
