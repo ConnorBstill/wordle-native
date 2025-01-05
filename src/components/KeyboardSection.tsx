@@ -1,21 +1,16 @@
-import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import LetterKey from './common/LetterKey';
 
-import { firstRow, secondRow, thirdRow } from '../constants/alphabet';
+import { firstRow, secondRow, thirdRow } from '../lib/utils';
 
 const KeyboardSection = () => {
   const { container, rowContainer } = styles;
 
   const renderRow = (rowCharacters: string[]) => {
-    const keys: React.ReactElement[] = [];
-
-    rowCharacters.forEach((letter: string, i: number) => {
-      keys.push(<LetterKey key={i} title={letter} />);
-    });
-
-    return keys;
+    return rowCharacters.map((letter: string, i: number) => (
+      <LetterKey key={i} keyTitle={letter} />
+    ));
   };
 
   return (

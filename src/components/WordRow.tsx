@@ -1,19 +1,24 @@
 import { useState, useEffect, useRef } from 'react';
 import { Animated, View, StyleSheet, TextInput } from 'react-native';
 
-import { useAppSelector } from '../../redux/Hooks';
-
+import { useAtomValue } from 'jotai';
 import {
-  WHITE_COLOR,
-  DARK_GRAY,
-  GREEN_COLOR,
-  DARK_YELLOW,
-  BLACK_COLOR,
-} from '../../colors';
+  correctWordAtom,
+  letterPositionAtom,
+  guessNumberAtom,
+  enteredLetterAtom,
+} from '../jotai';
+
+import { WHITE_COLOR, DARK_GRAY, GREEN_COLOR, DARK_YELLOW, BLACK_COLOR } from '../colors';
 
 const WordRow = (props: { row: number }) => {
+  const correctWord = useAtomValue(correctWordAtom);
+  const guessNumber = useAtomValue(guessNumberAtom);
+  const enteredLetter = useAtomValue(enteredLetterAtom);
+  const letterPosition = useAtomValue(letterPositionAtom);
+
   const [currentLetterPosition, setCurrentLetterPosition] = useState(-1);
-  const [wordState, setWordState] = useState<string>('');
+  const [wordState, setWordState] = useState('');
 
   const [letterBackgrounds, setLetterBackgrounds] = useState([
     { id: 1, color: BLACK_COLOR },
@@ -31,19 +36,17 @@ const WordRow = (props: { row: number }) => {
     new Animated.Value(0),
   ]).current;
 
-  const storeState = useAppSelector((state) => state.letters);
-
   const { container, letterInputStyle } = styles;
 
   const updateWord = (
-    letterPosition: number,
+    changedLetterPosition: number,
     wordLengthDiff: number,
     prevWord: string,
     enteredLetter: string = ''
   ) => {
     const prevWordCopy = prevWord.split('');
 
-    prevWordCopy[letterPosition] = enteredLetter;
+    prevWordCopy[changedLetterPosition] = enteredLetter;
     setCurrentLetterPosition((prevLetterPosition) => prevLetterPosition + wordLengthDiff);
 
     return prevWordCopy.join('');
@@ -64,8 +67,6 @@ const WordRow = (props: { row: number }) => {
     // Rotate halfway
     animatedFlipTiming(letterIndex, 1).start(({ finished }) => {
       if (finished) {
-        const { correctWord } = storeState;
-
         setLetterBackgrounds((prevBackgrounds) => {
           const prevBackgroundsCopy = prevBackgrounds.slice();
           const letter = wordState[letterIndex];
@@ -91,7 +92,6 @@ const WordRow = (props: { row: number }) => {
   };
 
   useEffect(() => {
-    const { letterPosition, enteredLetter, guessNumber } = storeState;
     const { row } = props;
 
     if (row === guessNumber && letterPosition > currentLetterPosition) {
@@ -101,14 +101,13 @@ const WordRow = (props: { row: number }) => {
       // Remove letter
       setWordState((prevWord) => updateWord(letterPosition + 1, -1, prevWord));
     }
-  }, [storeState.letterPosition]);
+  }, [letterPosition]);
 
   useEffect(() => {
-    const { guessNumber } = storeState;
     const { row } = props;
-    console.log('guessNumber', guessNumber);
+
     if (guessNumber - 1 === row) startLetterAnimation(0);
-  }, [storeState.guessNumber]);
+  }, [guessNumber]);
 
   const renderLetterInputs = () => {
     return letterBackgrounds.map(({ id, color }, index) => (
