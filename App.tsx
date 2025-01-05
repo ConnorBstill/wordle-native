@@ -1,21 +1,18 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useEffect, useCallback } from 'react';
 import { StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
-import { Provider } from 'react-redux';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 
-import { Store } from './src/redux/Store';
-import { Provider as JotaiProvider, atom } from 'jotai';
+import { Provider as JotaiProvider } from 'jotai';
 
 import Toolbar from './src/components/Toolbar';
 import WordRow from './src/components/WordRow';
 import KeyboardSection from './src/components/KeyboardSection';
 
 import { BLACK_COLOR } from './src/colors';
-import { WORD_OF_THE_DAY } from './src/lib/words';
 
 export default function App() {
   const { 
@@ -49,31 +46,29 @@ export default function App() {
 
   return (
     <RootSiblingParent>
-      <Provider store={Store}>
-        <JotaiProvider>
-          <SafeAreaView style={container} onLayout={onLayoutRootView}>
-            <View style={fullContainer}>
-              <StatusBar barStyle='light-content' />
-              <Toolbar />
+      <JotaiProvider>
+        <SafeAreaView style={container} onLayout={onLayoutRootView}>
+          <View style={fullContainer}>
+            <StatusBar barStyle='light-content' />
+            <Toolbar />
 
-              <View style ={contentContainer}>
-                <View style={guessesContainer}>
-                  <WordRow row={1} />
-                  <WordRow row={2} />
-                  <WordRow row={3} />
-                  <WordRow row={4} />
-                  <WordRow row={5} />
-                  <WordRow row={6} />
-                </View>
+            <View style ={contentContainer}>
+              <View style={guessesContainer}>
+                <WordRow row={1} />
+                <WordRow row={2} />
+                <WordRow row={3} />
+                <WordRow row={4} />
+                <WordRow row={5} />
+                <WordRow row={6} />
+              </View>
 
-                <View>
-                  <KeyboardSection />
-                </View>
+              <View>
+                <KeyboardSection />
               </View>
             </View>
-          </SafeAreaView>
-        </JotaiProvider>
-      </Provider>
+          </View>
+        </SafeAreaView>
+      </JotaiProvider>
     </RootSiblingParent>
   );
 }
