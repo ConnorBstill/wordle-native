@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@rneui/themed';
 
+import { DarkModeContext } from '../../DarkModeContext';
 import { useAtom } from 'jotai';
 import {
   correctWordAtom,
@@ -20,6 +21,7 @@ import {
   DARK_YELLOW,
   GRAY_COLOR,
   DARK_GRAY,
+  BLACK_COLOR,
 } from '../../colors';
 import { WORDS } from '../../lib/words';
 
@@ -30,6 +32,8 @@ interface LetterKeyProps {
 }
 
 const LetterKey = ({ keyTitle }: LetterKeyProps) => {
+  const { darkTheme } = useContext(DarkModeContext);
+
   const [correctWord] = useAtom(correctWordAtom);
   const [gameIsOver, setGameIsOver] = useAtom(gameIsOverAtom);
   const [guessNumber, setGuessNumber] = useAtom(guessNumberAtom);
@@ -128,9 +132,21 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
 
   const renderLabel = () => {
     if (keyTitle === 'backspace-outline') {
-      return <Icon name={keyTitle} type="ionicon" color={WHITE_COLOR} />;
+      return (
+        <Icon
+          name={keyTitle}
+          type="ionicon"
+          color={darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR}
+        />
+      );
     } else {
-      return <Text style={letterStyle}>{keyTitle}</Text>;
+      return (
+        <Text
+          style={[letterStyle, { color: darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR }]}
+        >
+          {keyTitle}
+        </Text>
+      );
     }
   };
 

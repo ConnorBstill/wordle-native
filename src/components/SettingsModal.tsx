@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { Modal, Text, View, Switch, StyleSheet } from 'react-native';
 
 import { Icon } from '@rneui/themed';
@@ -17,8 +17,9 @@ import {
   WHITE_COLOR,
   BLACK_COLOR,
   DARK_GRAY,
-  GRAY_COLOR,
+  LIGHT_GRAY,
   GREEN_COLOR,
+  GRAY_COLOR,
 } from '../colors';
 
 interface ScreenModalProps {
@@ -26,17 +27,22 @@ interface ScreenModalProps {
 }
 
 const SettingsModal = (props: ScreenModalProps) => {
+  const { darkTheme, setDarkTheme } = useContext(DarkModeContext);
+
   const [settingsModalShowing, setSettingsModalShowing] = useAtom(
     settingsModalShowingAtom
   );
 
   const gameIsStarted = useAtomValue(gameIsStartedAtom);
 
-  const { darkTheme, setDarkTheme } = useContext(DarkModeContext);
   const [hardModeEnabled, setHardModeEnabled] = useAtom(hardModeEnabledAtom);
   const [highContrastModeEnabled, setHighContrastModeEnabled] = useAtom(
     highContrastModeEnabledAtom
   );
+
+  const textColor = useMemo(() => {
+    return { color: darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR };
+  }, [darkTheme]);
 
   const {
     innerContainerStyles,
@@ -75,25 +81,30 @@ const SettingsModal = (props: ScreenModalProps) => {
       transparent={true}
     >
       <View style={innerContainerStyles}>
-        <View style={modalViewStyle}>
+        <View
+          style={[
+            modalViewStyle,
+            { backgroundColor: darkTheme === 'on' ? BLACK_COLOR : WHITE_COLOR },
+          ]}
+        >
           <View style={headerContainerStyle}>
             <View style={{ width: 20 }}></View>
 
-            <Text style={headerTextStyle}>SETTINGS</Text>
+            <Text style={[headerTextStyle, textColor]}>SETTINGS</Text>
 
             <Icon
               onPress={closeSettingsModal}
               style={closeIconStyle}
               name="close"
               type="material"
-              color={WHITE_COLOR}
+              color={darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR}
             />
           </View>
 
           <View style={settingsSectionContainerStyle}>
             <View>
-              <Text style={settingsSectionHeaderStyle}>Hard Mode</Text>
-              <Text style={settingsSectionSubtextStyle}>
+              <Text style={[settingsSectionHeaderStyle, textColor]}>Hard Mode</Text>
+              <Text style={[settingsSectionSubtextStyle, textColor]}>
                 Any revealed hints must be used in subsequent guesses
               </Text>
             </View>
@@ -105,12 +116,13 @@ const SettingsModal = (props: ScreenModalProps) => {
               style={settingsSwitchStyle}
               thumbColor={WHITE_COLOR}
               trackColor={{ false: DARK_GRAY, true: GREEN_COLOR }}
+              ios_backgroundColor={DARK_GRAY}
             />
           </View>
 
           <View style={settingsSectionContainerStyle}>
             <View>
-              <Text style={settingsSectionHeaderStyle}>Dark Theme</Text>
+              <Text style={[settingsSectionHeaderStyle, textColor]}>Dark Theme</Text>
             </View>
 
             <Switch
@@ -119,13 +131,16 @@ const SettingsModal = (props: ScreenModalProps) => {
               style={settingsSwitchStyle}
               thumbColor={WHITE_COLOR}
               trackColor={{ false: DARK_GRAY, true: GREEN_COLOR }}
+              ios_backgroundColor={DARK_GRAY}
             />
           </View>
 
           <View style={settingsSectionContainerStyle}>
             <View>
-              <Text style={settingsSectionHeaderStyle}>High Contrast Mode</Text>
-              <Text style={settingsSectionSubtextStyle}>
+              <Text style={[settingsSectionHeaderStyle, textColor]}>
+                High Contrast Mode
+              </Text>
+              <Text style={[settingsSectionSubtextStyle, textColor]}>
                 Contrast and colorblindness improvements
               </Text>
             </View>
@@ -135,7 +150,8 @@ const SettingsModal = (props: ScreenModalProps) => {
               onChange={toggleHighContrastMode}
               style={settingsSwitchStyle}
               thumbColor={WHITE_COLOR}
-              trackColor={{ false: DARK_GRAY, true: GREEN_COLOR }}
+              trackColor={{ false: DARK_GRAY, true: 'blue' }}
+              ios_backgroundColor={DARK_GRAY}
             />
           </View>
         </View>

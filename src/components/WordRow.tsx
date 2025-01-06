@@ -32,7 +32,7 @@ const WordRow = ({ row }: { row: number }) => {
 
   const inputsDefaultBackgroundColor = useMemo(() => {
     return darkTheme === 'on' ? BLACK_COLOR : WHITE_COLOR;
-  }, [darkTheme])
+  }, [darkTheme]);
 
   const [letterBackgrounds, setLetterBackgrounds] = useState([
     { id: 1, backgroundColor: inputsDefaultBackgroundColor },
@@ -135,12 +135,19 @@ const WordRow = ({ row }: { row: number }) => {
   const renderLetterInputs = () => {
     return letterBackgrounds.map(({ id, backgroundColor }, index) => {
       let borderColor = DARK_GRAY;
-      const backgroundIsDefault = backgroundColor === BLACK_COLOR || backgroundColor === WHITE_COLOR;
+      let textColor = WHITE_COLOR;
+
+      const backgroundIsDefault =
+        backgroundColor === BLACK_COLOR || backgroundColor === WHITE_COLOR;
 
       if (!backgroundIsDefault) {
         borderColor = backgroundColor;
       } else if (backgroundIsDefault && wordState[index]) {
         borderColor = LIGHT_GRAY;
+      }
+
+      if (backgroundIsDefault && darkTheme !== 'on') {
+        textColor = BLACK_COLOR;
       }
 
       return (
@@ -162,12 +169,14 @@ const WordRow = ({ row }: { row: number }) => {
             textAlign="center"
             caretHidden={true}
             style={[
-              letterInputStyle, 
-              { 
-                borderColor, 
-                backgroundColor,
-                color: darkTheme === 'on' ? WHITE_COLOR: BLACK_COLOR
-              }
+              letterInputStyle,
+              {
+                borderColor,
+                backgroundColor: backgroundIsDefault
+                  ? inputsDefaultBackgroundColor
+                  : backgroundColor,
+                color: textColor,
+              },
             ]}
             maxLength={1}
             editable={false}

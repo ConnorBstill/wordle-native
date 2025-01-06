@@ -1,6 +1,6 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useEffect, useCallback, useState } from 'react';
-import { StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
+import { StyleSheet, SafeAreaView, View, StatusBar, StatusBarStyle } from 'react-native';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 import * as SplashScreen from 'expo-splash-screen';
@@ -21,8 +21,11 @@ export default function App() {
   const [darkTheme, setDarkTheme] = useState('on');
   const darkModeProviderValue = { darkTheme, setDarkTheme }
 
-  const pageBackgroundColor = {
-    backgroundColor: darkTheme === 'on' ? BLACK_COLOR : WHITE_COLOR,
+  const darkThemeConfigs = {
+    pageBackgroundColor: {
+      backgroundColor: darkTheme === 'on' ? BLACK_COLOR : WHITE_COLOR
+    },
+    toolbarStyle: darkTheme === 'on' ? 'light-content' : 'dark-content'
   }
 
   const { 
@@ -58,9 +61,9 @@ export default function App() {
     <RootSiblingParent>
       <JotaiProvider>
         <DarkModeContext.Provider value={darkModeProviderValue}>
-          <SafeAreaView style={[container, pageBackgroundColor]} onLayout={onLayoutRootView}>
+          <SafeAreaView style={[container, darkThemeConfigs.pageBackgroundColor]} onLayout={onLayoutRootView}>
             <View style={fullContainer}>
-              <StatusBar barStyle='light-content' />
+              <StatusBar barStyle={darkThemeConfigs.toolbarStyle as StatusBarStyle} />
               <Toolbar />
 
               <View style ={contentContainer}>
