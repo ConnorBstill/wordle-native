@@ -9,9 +9,16 @@ import {
   enteredLetterAtom,
 } from '../jotai-store';
 
-import { WHITE_COLOR, DARK_GRAY, GREEN_COLOR, DARK_YELLOW, BLACK_COLOR } from '../colors';
+import {
+  WHITE_COLOR,
+  DARK_GRAY,
+  GREEN_COLOR,
+  DARK_YELLOW,
+  BLACK_COLOR,
+  LIGHT_GRAY,
+} from '../colors';
 
-const WordRow = (props: { row: number }) => {
+const WordRow = ({ row }: { row: number }) => {
   const correctWord = useAtomValue(correctWordAtom);
   const guessNumber = useAtomValue(guessNumberAtom);
   const enteredLetter = useAtomValue(enteredLetterAtom);
@@ -21,11 +28,11 @@ const WordRow = (props: { row: number }) => {
   const [wordState, setWordState] = useState('');
 
   const [letterBackgrounds, setLetterBackgrounds] = useState([
-    { id: 1, color: BLACK_COLOR },
-    { id: 2, color: BLACK_COLOR },
-    { id: 3, color: BLACK_COLOR },
-    { id: 4, color: BLACK_COLOR },
-    { id: 5, color: BLACK_COLOR },
+    { id: 1, backgroundColor: BLACK_COLOR },
+    { id: 2, backgroundColor: BLACK_COLOR },
+    { id: 3, backgroundColor: BLACK_COLOR },
+    { id: 4, backgroundColor: BLACK_COLOR },
+    { id: 5, backgroundColor: BLACK_COLOR },
   ]);
 
   const flipAnimationValues = useRef([
@@ -73,12 +80,13 @@ const WordRow = (props: { row: number }) => {
           const includesLetter = correctWord.includes(letter);
 
           if (includesLetter && correctWord[letterIndex] === letter) {
-            prevBackgroundsCopy[letterIndex].color = GREEN_COLOR;
+            prevBackgroundsCopy[letterIndex].backgroundColor = GREEN_COLOR;
           } else if (includesLetter && correctWord[letterIndex] !== letter) {
-            prevBackgroundsCopy[letterIndex].color = DARK_YELLOW;
+            prevBackgroundsCopy[letterIndex].backgroundColor = DARK_YELLOW;
           }
 
-          if (!includesLetter) prevBackgroundsCopy[letterIndex].color = DARK_GRAY;
+          if (!includesLetter)
+            prevBackgroundsCopy[letterIndex].backgroundColor = DARK_GRAY;
 
           return prevBackgroundsCopy;
         });
@@ -92,8 +100,6 @@ const WordRow = (props: { row: number }) => {
   };
 
   useEffect(() => {
-    const { row } = props;
-
     if (row === guessNumber && letterPosition > currentLetterPosition) {
       // Add letter
       setWordState((prevWord) => updateWord(letterPosition, 1, prevWord, enteredLetter));
@@ -104,36 +110,44 @@ const WordRow = (props: { row: number }) => {
   }, [letterPosition]);
 
   useEffect(() => {
-    const { row } = props;
-
     if (guessNumber - 1 === row) startLetterAnimation(0);
   }, [guessNumber]);
 
   const renderLetterInputs = () => {
-    return letterBackgrounds.map(({ id, color }, index) => (
-      <Animated.View
-        key={`${id}`}
-        style={{
-          transform: [
-            {
-              rotateX: flipAnimationValues[index].interpolate({
-                inputRange: [0, 2],
-                outputRange: ['0deg', '180deg'],
-              }),
-            },
-          ],
-        }}
-      >
-        <TextInput
-          value={wordState[index]}
-          textAlign="center"
-          caretHidden={true}
-          style={[letterInputStyle, { backgroundColor: color }]}
-          maxLength={1}
-          editable={false}
-        />
-      </Animated.View>
-    ));
+    return letterBackgrounds.map(({ id, backgroundColor }, index) => {
+      let borderColor = DARK_GRAY;
+
+      if (backgroundColor !== BLACK_COLOR) {
+        borderColor = backgroundColor;
+      } else if (backgroundColor == BLACK_COLOR && wordState[index]) {
+        borderColor = LIGHT_GRAY;
+      }
+
+      return (
+        <Animated.View
+          key={`${id}`}
+          style={{
+            transform: [
+              {
+                rotateX: flipAnimationValues[index].interpolate({
+                  inputRange: [0, 2],
+                  outputRange: ['0deg', '180deg'],
+                }),
+              },
+            ],
+          }}
+        >
+          <TextInput
+            value={wordState[index]}
+            textAlign="center"
+            caretHidden={true}
+            style={[letterInputStyle, { borderColor, backgroundColor }]}
+            maxLength={1}
+            editable={false}
+          />
+        </Animated.View>
+      );
+    });
   };
 
   return <View style={container}>{renderLetterInputs()}</View>;
@@ -147,7 +161,6 @@ const styles = StyleSheet.create({
   letterInputStyle: {
     color: WHITE_COLOR,
     fontSize: 38,
-    borderColor: DARK_GRAY,
     borderWidth: 2,
     width: 64,
     height: 64,
