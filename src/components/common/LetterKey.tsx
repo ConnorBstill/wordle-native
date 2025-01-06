@@ -22,6 +22,8 @@ import {
   GRAY_COLOR,
   DARK_GRAY,
   BLACK_COLOR,
+  LIGHT_GRAY,
+  LIGHTEST_GRAY,
 } from '../../colors';
 import { WORDS } from '../../lib/words';
 
@@ -43,8 +45,42 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
   const [enteredLetter, setEnteredLetter] = useAtom(enteredLetterAtom);
   const [gameIsStarted, setGameIsStarted] = useAtom(gameIsStartedAtom);
 
+  const themeColorsConfig = useMemo(() => {
+    const isDarkTheme = darkTheme === 'on';
+
+    return {
+      charNotGuessed: isDarkTheme ? GRAY_COLOR : LIGHTEST_GRAY,
+      charGuessedNotInWord: GRAY_COLOR,
+      charInRightPlace: GREEN_COLOR,
+      charInWordNotRightPlace: DARK_YELLOW,
+      charDefaultText: isDarkTheme ? WHITE_COLOR : BLACK_COLOR,
+    };
+  }, [darkTheme]);
+
+  const setTextColor = () => {
+    const { charDefaultText } = themeColorsConfig;
+
+    let color = WHITE_COLOR;
+
+    guessedWords.forEach((word: string) => {
+      const letterGuessed = word.indexOf(keyTitle) !== -1;
+
+      if (!letterGuessed) color = charDefaultText;
+    });
+
+    return { color };
+  };
+
   const setKeyBackground = () => {
-    let color = GRAY_COLOR;
+    const {
+      charNotGuessed,
+      charGuessedNotInWord,
+      charInRightPlace,
+      charInWordNotRightPlace,
+    } = themeColorsConfig;
+
+    let backgroundColor = charNotGuessed;
+
     const letterInCorrectWord = correctWord.indexOf(keyTitle) !== -1;
 
     guessedWords.forEach((word: string) => {
@@ -53,21 +89,16 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
       const letterGuessed = word.indexOf(keyTitle) !== -1;
 
       if (letterInCorrectWord && letterInCorrectSpot) {
-        color = GREEN_COLOR;
+        backgroundColor = charInRightPlace;
       } else if (letterGuessed && letterInCorrectWord && !letterInCorrectSpot) {
-        color = DARK_YELLOW;
+        backgroundColor = charInWordNotRightPlace;
       } else if (letterGuessed && !letterInCorrectWord) {
-        color = DARK_GRAY;
+        backgroundColor = charGuessedNotInWord;
       }
     });
 
-    return { backgroundColor: color };
+    return { backgroundColor };
   };
-
-  const keyBackground = useMemo<{ backgroundColor: string }>(
-    () => setKeyBackground(),
-    [guessedWords.length]
-  );
 
   const { buttonStyle, letterStyle } = styles;
 
@@ -140,13 +171,7 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
         />
       );
     } else {
-      return (
-        <Text
-          style={[letterStyle, { color: darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR }]}
-        >
-          {keyTitle}
-        </Text>
-      );
+      return <Text style={[letterStyle, setTextColor()]}>{keyTitle}</Text>;
     }
   };
 
@@ -154,7 +179,7 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
     <View>
       <TouchableOpacity
         onPress={() => handleKeyPress()}
-        style={[{ ...buttonStyle, ...setKeyWidth() }, keyBackground]}
+        style={[{ ...buttonStyle, ...setKeyWidth(), ...setKeyBackground() }]}
       >
         {renderLabel()}
       </TouchableOpacity>
@@ -173,7 +198,6 @@ const styles = StyleSheet.create({
   },
   widerButton: {},
   letterStyle: {
-    color: WHITE_COLOR,
     fontFamily: 'Helvetica',
     fontWeight: 'bold',
   },
