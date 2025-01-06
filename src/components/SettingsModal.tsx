@@ -1,15 +1,17 @@
+import { useContext } from 'react';
 import { Modal, Text, View, Switch, StyleSheet } from 'react-native';
+
 import { Icon } from '@rneui/themed';
 
+import { DarkModeContext } from '../DarkModeContext';
 import { useAtom, useAtomValue } from 'jotai';
 
 import {
   settingsModalShowingAtom,
   hardModeEnabledAtom,
-  darkThemeEnabledAtom,
   highContrastModeEnabledAtom,
   gameIsStartedAtom,
-} from '../../jotai-store';
+} from '../jotai-store';
 
 import {
   WHITE_COLOR,
@@ -17,7 +19,7 @@ import {
   DARK_GRAY,
   GRAY_COLOR,
   GREEN_COLOR,
-} from '../../colors';
+} from '../colors';
 
 interface ScreenModalProps {
   visible?: boolean;
@@ -30,8 +32,8 @@ const SettingsModal = (props: ScreenModalProps) => {
 
   const gameIsStarted = useAtomValue(gameIsStartedAtom);
 
+  const { darkTheme, setDarkTheme } = useContext(DarkModeContext);
   const [hardModeEnabled, setHardModeEnabled] = useAtom(hardModeEnabledAtom);
-  const [darkThemeEnabled, setDarkThemeEnabled] = useAtom(darkThemeEnabledAtom);
   const [highContrastModeEnabled, setHighContrastModeEnabled] = useAtom(
     highContrastModeEnabledAtom
   );
@@ -56,8 +58,8 @@ const SettingsModal = (props: ScreenModalProps) => {
     setHardModeEnabled((prevVal) => !prevVal);
   };
 
-  const toggleDarkTheme = () => {
-    setDarkThemeEnabled((prevVal) => !prevVal);
+  const toggleDarkTheme = (value: boolean) => {
+    setDarkTheme(value ? 'on' : 'off');
   };
 
   const toggleHighContrastMode = () => {
@@ -68,7 +70,6 @@ const SettingsModal = (props: ScreenModalProps) => {
     <Modal
       visible={settingsModalShowing}
       animationType="slide"
-      // style={{ backgroundColor: 'red' }}
       // backdropColor is in the docs but doesn't actually exist :)) https://reactnative.dev/docs/modal#backdropcolor
       // backdropColor='rgba(0, 0, 0, 0.5)'
       transparent={true}
@@ -113,8 +114,8 @@ const SettingsModal = (props: ScreenModalProps) => {
             </View>
 
             <Switch
-              value={darkThemeEnabled}
-              onChange={toggleDarkTheme}
+              value={darkTheme === 'on' ? true : false}
+              onValueChange={toggleDarkTheme}
               style={settingsSwitchStyle}
               thumbColor={WHITE_COLOR}
               trackColor={{ false: DARK_GRAY, true: GREEN_COLOR }}
