@@ -3,7 +3,7 @@ import { Modal, Text, View, Switch, StyleSheet } from 'react-native';
 
 import { Icon } from '@rneui/themed';
 
-import { DarkModeContext } from '../DarkModeContext';
+import { DarkModeContext } from '../providers/DarkModeContext';
 import { useAtom, useAtomValue } from 'jotai';
 
 import {

@@ -2,7 +2,7 @@ import { useContext, useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Icon } from '@rneui/themed';
 
-import { DarkModeContext } from '../DarkModeContext';
+import { DarkModeContext } from '../providers/DarkModeContext';
 import { useSetAtom } from 'jotai';
 
 import { settingsModalShowingAtom } from '../jotai-store';

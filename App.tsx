@@ -13,7 +13,7 @@ import WordRow from './src/components/WordRow';
 import KeyboardSection from './src/components/KeyboardSection';
 import SettingsModal from './src/components/SettingsModal';
 
-import { DarkModeContext } from './src/DarkModeContext';
+import { DarkModeContext } from './src/providers/DarkModeContext';
 
 import { BLACK_COLOR, WHITE_COLOR } from './src/colors';
 
