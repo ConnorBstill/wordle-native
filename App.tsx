@@ -1,6 +1,6 @@
 // import { StatusBar } from 'expo-status-bar';
-import { useEffect, useCallback } from 'react';
-import { StyleSheet, SafeAreaView, View, StatusBar } from 'react-native';
+import { useEffect, useCallback, useState } from 'react';
+import { StyleSheet, SafeAreaView, View, StatusBar, StatusBarStyle } from 'react-native';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 import * as SplashScreen from 'expo-splash-screen';
@@ -11,11 +11,23 @@ import { Provider as JotaiProvider } from 'jotai';
 import Toolbar from './src/components/Toolbar';
 import WordRow from './src/components/WordRow';
 import KeyboardSection from './src/components/KeyboardSection';
-import SettingsModal from './src/components/common/SettingsModal';
+import SettingsModal from './src/components/SettingsModal';
 
-import { BLACK_COLOR } from './src/colors';
+import { DarkModeContext } from './src/providers/DarkModeContext';
+
+import { BLACK_COLOR, WHITE_COLOR } from './src/colors';
 
 export default function App() {
+  const [darkTheme, setDarkTheme] = useState('on');
+  const darkModeProviderValue = { darkTheme, setDarkTheme }
+
+  const darkThemeConfigs = {
+    pageBackgroundColor: {
+      backgroundColor: darkTheme === 'on' ? BLACK_COLOR : WHITE_COLOR
+    },
+    toolbarStyle: darkTheme === 'on' ? 'light-content' : 'dark-content'
+  }
+
   const { 
     container, 
     fullContainer, 
@@ -48,29 +60,31 @@ export default function App() {
   return (
     <RootSiblingParent>
       <JotaiProvider>
-        <SafeAreaView style={container} onLayout={onLayoutRootView}>
-          <View style={fullContainer}>
-            <StatusBar barStyle='light-content' />
-            <Toolbar />
+        <DarkModeContext.Provider value={darkModeProviderValue}>
+          <SafeAreaView style={[container, darkThemeConfigs.pageBackgroundColor]} onLayout={onLayoutRootView}>
+            <View style={fullContainer}>
+              <StatusBar barStyle={darkThemeConfigs.toolbarStyle as StatusBarStyle} />
+              <Toolbar />
 
-            <View style ={contentContainer}>
-              <View style={guessesContainer}>
-                <WordRow row={1} />
-                <WordRow row={2} />
-                <WordRow row={3} />
-                <WordRow row={4} />
-                <WordRow row={5} />
-                <WordRow row={6} />
-              </View>
+              <View style ={contentContainer}>
+                <View style={guessesContainer}>
+                  <WordRow row={1} />
+                  <WordRow row={2} />
+                  <WordRow row={3} />
+                  <WordRow row={4} />
+                  <WordRow row={5} />
+                  <WordRow row={6} />
+                </View>
 
-              <View>
-                <KeyboardSection />
+                <View>
+                  <KeyboardSection />
+                </View>
               </View>
             </View>
-          </View>
 
-          <SettingsModal />
-        </SafeAreaView>
+            <SettingsModal />
+          </SafeAreaView>
+        </DarkModeContext.Provider>
       </JotaiProvider>
     </RootSiblingParent>
   );
@@ -79,7 +93,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: BLACK_COLOR,
   },
   fullContainer: {
     marginTop: StatusBar.currentHeight,

@@ -1,33 +1,40 @@
+import { useContext, useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Icon } from '@rneui/themed';
 
+import { DarkModeContext } from '../providers/DarkModeContext';
 import { useSetAtom } from 'jotai';
 
 import { settingsModalShowingAtom } from '../jotai-store';
 
-import { DARK_GRAY, WHITE_COLOR } from '../colors';
+import { DARK_GRAY, WHITE_COLOR, BLACK_COLOR } from '../colors';
 
 const Toolbar = () => {
+  const { darkTheme } = useContext(DarkModeContext);
   const setSettingsModalShowing = useSetAtom(settingsModalShowingAtom);
+
+  const textColor = useMemo(
+    () => (darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR),
+    [darkTheme]
+  );
 
   const { containerStyle, titleContainerStyle, titleStyle } = styles;
 
   const showSettingsModal = () => {
-    console.log('icon pressed');
     setSettingsModalShowing(true);
   };
 
   return (
     <View style={containerStyle}>
       <View style={titleContainerStyle}>
-        <Text style={titleStyle}>Wordle</Text>
+        <Text style={[titleStyle, { color: textColor }]}>Wordle</Text>
       </View>
 
       <Icon
         onPress={showSettingsModal}
         name="settings"
         type="material"
-        color={WHITE_COLOR}
+        color={textColor}
       />
     </View>
   );

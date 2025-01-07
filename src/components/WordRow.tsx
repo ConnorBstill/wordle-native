@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext, useMemo } from 'react';
 import { Animated, View, StyleSheet, TextInput } from 'react-native';
 
+import { DarkModeContext } from '../providers/DarkModeContext';
 import { useAtomValue } from 'jotai';
 import {
   correctWordAtom,
@@ -14,11 +15,17 @@ import {
   DARK_GRAY,
   GREEN_COLOR,
   DARK_YELLOW,
+  LIGHT_MODE_GREEN,
+  LIGHT_MODE_YELLOW,
   BLACK_COLOR,
   LIGHT_GRAY,
+  GRAY_COLOR,
+  LIGHTEST_GRAY,
 } from '../colors';
 
 const WordRow = ({ row }: { row: number }) => {
+  const { darkTheme } = useContext(DarkModeContext);
+
   const correctWord = useAtomValue(correctWordAtom);
   const guessNumber = useAtomValue(guessNumberAtom);
   const enteredLetter = useAtomValue(enteredLetterAtom);
@@ -27,12 +34,16 @@ const WordRow = ({ row }: { row: number }) => {
   const [currentLetterPosition, setCurrentLetterPosition] = useState(-1);
   const [wordState, setWordState] = useState('');
 
+  const inputsDefaultBackgroundColor = useMemo(() => {
+    return darkTheme === 'on' ? BLACK_COLOR : WHITE_COLOR;
+  }, [darkTheme]);
+
   const [letterBackgrounds, setLetterBackgrounds] = useState([
-    { id: 1, backgroundColor: BLACK_COLOR },
-    { id: 2, backgroundColor: BLACK_COLOR },
-    { id: 3, backgroundColor: BLACK_COLOR },
-    { id: 4, backgroundColor: BLACK_COLOR },
-    { id: 5, backgroundColor: BLACK_COLOR },
+    { id: 1, backgroundColor: inputsDefaultBackgroundColor },
+    { id: 2, backgroundColor: inputsDefaultBackgroundColor },
+    { id: 3, backgroundColor: inputsDefaultBackgroundColor },
+    { id: 4, backgroundColor: inputsDefaultBackgroundColor },
+    { id: 5, backgroundColor: inputsDefaultBackgroundColor },
   ]);
 
   const flipAnimationValues = useRef([
@@ -42,6 +53,16 @@ const WordRow = ({ row }: { row: number }) => {
     new Animated.Value(0),
     new Animated.Value(0),
   ]).current;
+
+  const themeColorsConfig = useMemo(() => {
+    const isDarkTheme = darkTheme === 'on';
+
+    return {
+      charGuessedNotInWord: isDarkTheme ? DARK_GRAY : GRAY_COLOR,
+      charInRightPlace: isDarkTheme ? GREEN_COLOR : LIGHT_MODE_GREEN,
+      charInWordNotRightPlace: isDarkTheme ? DARK_YELLOW : LIGHT_MODE_YELLOW,
+    };
+  }, [darkTheme]);
 
   const { container, letterInputStyle } = styles;
 
@@ -67,6 +88,28 @@ const WordRow = ({ row }: { row: number }) => {
     });
   };
 
+  const calculateLetterBackground = (letterIndex: number) => {
+    const { charInRightPlace, charInWordNotRightPlace, charGuessedNotInWord } =
+      themeColorsConfig;
+
+    setLetterBackgrounds((prevBackgrounds) => {
+      const prevBackgroundsCopy = prevBackgrounds.slice();
+      const letter = wordState[letterIndex];
+      const includesLetter = correctWord.includes(letter);
+
+      if (includesLetter && correctWord[letterIndex] === letter) {
+        prevBackgroundsCopy[letterIndex].backgroundColor = charInRightPlace;
+      } else if (includesLetter && correctWord[letterIndex] !== letter) {
+        prevBackgroundsCopy[letterIndex].backgroundColor = charInWordNotRightPlace;
+      }
+
+      if (!includesLetter)
+        prevBackgroundsCopy[letterIndex].backgroundColor = charGuessedNotInWord;
+
+      return prevBackgroundsCopy;
+    });
+  };
+
   // Animates each letter sequentially after a guess
   const startLetterAnimation = (letterIndex: number): any => {
     if (letterIndex > 4) return;
@@ -74,22 +117,7 @@ const WordRow = ({ row }: { row: number }) => {
     // Rotate halfway
     animatedFlipTiming(letterIndex, 1).start(({ finished }) => {
       if (finished) {
-        setLetterBackgrounds((prevBackgrounds) => {
-          const prevBackgroundsCopy = prevBackgrounds.slice();
-          const letter = wordState[letterIndex];
-          const includesLetter = correctWord.includes(letter);
-
-          if (includesLetter && correctWord[letterIndex] === letter) {
-            prevBackgroundsCopy[letterIndex].backgroundColor = GREEN_COLOR;
-          } else if (includesLetter && correctWord[letterIndex] !== letter) {
-            prevBackgroundsCopy[letterIndex].backgroundColor = DARK_YELLOW;
-          }
-
-          if (!includesLetter)
-            prevBackgroundsCopy[letterIndex].backgroundColor = DARK_GRAY;
-
-          return prevBackgroundsCopy;
-        });
+        calculateLetterBackground(letterIndex);
 
         // Rotate back after setting background color and go to next letter
         animatedFlipTiming(letterIndex, 0).start(({ finished }) => {
@@ -113,14 +141,30 @@ const WordRow = ({ row }: { row: number }) => {
     if (guessNumber - 1 === row) startLetterAnimation(0);
   }, [guessNumber]);
 
+  useEffect(() => {
+    if (guessNumber > row) {
+      for (let i = 0; i < letterBackgrounds.length; i++) {
+        calculateLetterBackground(i);
+      }
+    }
+  }, [darkTheme]);
+
   const renderLetterInputs = () => {
     return letterBackgrounds.map(({ id, backgroundColor }, index) => {
       let borderColor = DARK_GRAY;
+      let textColor = WHITE_COLOR;
 
-      if (backgroundColor !== BLACK_COLOR) {
+      const backgroundIsDefault =
+        backgroundColor === BLACK_COLOR || backgroundColor === WHITE_COLOR;
+
+      if (!backgroundIsDefault) {
         borderColor = backgroundColor;
-      } else if (backgroundColor == BLACK_COLOR && wordState[index]) {
+      } else if (backgroundIsDefault && wordState[index]) {
         borderColor = LIGHT_GRAY;
+      }
+
+      if (backgroundIsDefault && darkTheme !== 'on') {
+        textColor = BLACK_COLOR;
       }
 
       return (
@@ -141,7 +185,16 @@ const WordRow = ({ row }: { row: number }) => {
             value={wordState[index]}
             textAlign="center"
             caretHidden={true}
-            style={[letterInputStyle, { borderColor, backgroundColor }]}
+            style={[
+              letterInputStyle,
+              {
+                borderColor,
+                backgroundColor: backgroundIsDefault
+                  ? inputsDefaultBackgroundColor
+                  : backgroundColor,
+                color: textColor,
+              },
+            ]}
             maxLength={1}
             editable={false}
           />
@@ -159,7 +212,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   letterInputStyle: {
-    color: WHITE_COLOR,
     fontSize: 38,
     borderWidth: 2,
     width: 64,

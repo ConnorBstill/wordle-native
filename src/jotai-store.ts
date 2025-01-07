@@ -6,7 +6,6 @@ console.log('WORD_OF_THE_DAY', WORD_OF_THE_DAY);
 
 export const settingsModalShowingAtom = atom(false);
 export const hardModeEnabledAtom = atom(false);
-export const darkThemeEnabledAtom = atom(true);
 export const highContrastModeEnabledAtom = atom(false);
 
 export const correctWordAtom = atom(WORD_OF_THE_DAY.toUpperCase());

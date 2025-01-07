@@ -1,29 +1,27 @@
+import { useContext, useMemo } from 'react';
 import { Modal, Text, View, Switch, StyleSheet } from 'react-native';
+
 import { Icon } from '@rneui/themed';
 
+import { DarkModeContext } from '../providers/DarkModeContext';
 import { useAtom, useAtomValue } from 'jotai';
 
 import {
   settingsModalShowingAtom,
   hardModeEnabledAtom,
-  darkThemeEnabledAtom,
   highContrastModeEnabledAtom,
   gameIsStartedAtom,
-} from '../../jotai-store';
+} from '../jotai-store';
 
-import {
-  WHITE_COLOR,
-  BLACK_COLOR,
-  DARK_GRAY,
-  GRAY_COLOR,
-  GREEN_COLOR,
-} from '../../colors';
+import { WHITE_COLOR, BLACK_COLOR, DARK_GRAY, GREEN_COLOR, GRAY_COLOR } from '../colors';
 
 interface ScreenModalProps {
   visible?: boolean;
 }
 
 const SettingsModal = (props: ScreenModalProps) => {
+  const { darkTheme, setDarkTheme } = useContext(DarkModeContext);
+
   const [settingsModalShowing, setSettingsModalShowing] = useAtom(
     settingsModalShowingAtom
   );
@@ -31,10 +29,13 @@ const SettingsModal = (props: ScreenModalProps) => {
   const gameIsStarted = useAtomValue(gameIsStartedAtom);
 
   const [hardModeEnabled, setHardModeEnabled] = useAtom(hardModeEnabledAtom);
-  const [darkThemeEnabled, setDarkThemeEnabled] = useAtom(darkThemeEnabledAtom);
   const [highContrastModeEnabled, setHighContrastModeEnabled] = useAtom(
     highContrastModeEnabledAtom
   );
+
+  const textColor = useMemo(() => {
+    return { color: darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR };
+  }, [darkTheme]);
 
   const {
     innerContainerStyles,
@@ -56,8 +57,8 @@ const SettingsModal = (props: ScreenModalProps) => {
     setHardModeEnabled((prevVal) => !prevVal);
   };
 
-  const toggleDarkTheme = () => {
-    setDarkThemeEnabled((prevVal) => !prevVal);
+  const toggleDarkTheme = (value: boolean) => {
+    setDarkTheme(value ? 'on' : 'off');
   };
 
   const toggleHighContrastMode = () => {
@@ -68,31 +69,35 @@ const SettingsModal = (props: ScreenModalProps) => {
     <Modal
       visible={settingsModalShowing}
       animationType="slide"
-      // style={{ backgroundColor: 'red' }}
       // backdropColor is in the docs but doesn't actually exist :)) https://reactnative.dev/docs/modal#backdropcolor
       // backdropColor='rgba(0, 0, 0, 0.5)'
       transparent={true}
     >
       <View style={innerContainerStyles}>
-        <View style={modalViewStyle}>
+        <View
+          style={[
+            modalViewStyle,
+            { backgroundColor: darkTheme === 'on' ? BLACK_COLOR : WHITE_COLOR },
+          ]}
+        >
           <View style={headerContainerStyle}>
             <View style={{ width: 20 }}></View>
 
-            <Text style={headerTextStyle}>SETTINGS</Text>
+            <Text style={[headerTextStyle, textColor]}>SETTINGS</Text>
 
             <Icon
               onPress={closeSettingsModal}
               style={closeIconStyle}
               name="close"
               type="material"
-              color={WHITE_COLOR}
+              color={darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR}
             />
           </View>
 
           <View style={settingsSectionContainerStyle}>
             <View>
-              <Text style={settingsSectionHeaderStyle}>Hard Mode</Text>
-              <Text style={settingsSectionSubtextStyle}>
+              <Text style={[settingsSectionHeaderStyle, textColor]}>Hard Mode</Text>
+              <Text style={[settingsSectionSubtextStyle, textColor]}>
                 Any revealed hints must be used in subsequent guesses
               </Text>
             </View>
@@ -104,27 +109,31 @@ const SettingsModal = (props: ScreenModalProps) => {
               style={settingsSwitchStyle}
               thumbColor={WHITE_COLOR}
               trackColor={{ false: DARK_GRAY, true: GREEN_COLOR }}
+              ios_backgroundColor={DARK_GRAY}
             />
           </View>
 
           <View style={settingsSectionContainerStyle}>
             <View>
-              <Text style={settingsSectionHeaderStyle}>Dark Theme</Text>
+              <Text style={[settingsSectionHeaderStyle, textColor]}>Dark Theme</Text>
             </View>
 
             <Switch
-              value={darkThemeEnabled}
-              onChange={toggleDarkTheme}
+              value={darkTheme === 'on' ? true : false}
+              onValueChange={toggleDarkTheme}
               style={settingsSwitchStyle}
               thumbColor={WHITE_COLOR}
               trackColor={{ false: DARK_GRAY, true: GREEN_COLOR }}
+              ios_backgroundColor={DARK_GRAY}
             />
           </View>
 
           <View style={settingsSectionContainerStyle}>
             <View>
-              <Text style={settingsSectionHeaderStyle}>High Contrast Mode</Text>
-              <Text style={settingsSectionSubtextStyle}>
+              <Text style={[settingsSectionHeaderStyle, textColor]}>
+                High Contrast Mode
+              </Text>
+              <Text style={[settingsSectionSubtextStyle, textColor]}>
                 Contrast and colorblindness improvements
               </Text>
             </View>
@@ -134,7 +143,8 @@ const SettingsModal = (props: ScreenModalProps) => {
               onChange={toggleHighContrastMode}
               style={settingsSwitchStyle}
               thumbColor={WHITE_COLOR}
-              trackColor={{ false: DARK_GRAY, true: GREEN_COLOR }}
+              trackColor={{ false: DARK_GRAY, true: 'blue' }}
+              ios_backgroundColor={DARK_GRAY}
             />
           </View>
         </View>
