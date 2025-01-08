@@ -34,26 +34,6 @@ const WordRow = ({ row }: { row: number }) => {
   const [currentLetterPosition, setCurrentLetterPosition] = useState(-1);
   const [wordState, setWordState] = useState('');
 
-  const inputsDefaultBackgroundColor = useMemo(() => {
-    return darkTheme === 'on' ? BLACK_COLOR : WHITE_COLOR;
-  }, [darkTheme]);
-
-  const [letterBackgrounds, setLetterBackgrounds] = useState([
-    { id: 1, backgroundColor: inputsDefaultBackgroundColor },
-    { id: 2, backgroundColor: inputsDefaultBackgroundColor },
-    { id: 3, backgroundColor: inputsDefaultBackgroundColor },
-    { id: 4, backgroundColor: inputsDefaultBackgroundColor },
-    { id: 5, backgroundColor: inputsDefaultBackgroundColor },
-  ]);
-
-  const flipAnimationValues = useRef([
-    new Animated.Value(0),
-    new Animated.Value(0),
-    new Animated.Value(0),
-    new Animated.Value(0),
-    new Animated.Value(0),
-  ]).current;
-
   const themeColorsConfig = useMemo(() => {
     const isDarkTheme = darkTheme === 'on';
 
@@ -61,8 +41,27 @@ const WordRow = ({ row }: { row: number }) => {
       charGuessedNotInWord: isDarkTheme ? DARK_GRAY : GRAY_COLOR,
       charInRightPlace: isDarkTheme ? GREEN_COLOR : LIGHT_MODE_GREEN,
       charInWordNotRightPlace: isDarkTheme ? DARK_YELLOW : LIGHT_MODE_YELLOW,
+      defaultBackgroundColor: isDarkTheme ? BLACK_COLOR : WHITE_COLOR,
+      defaultBorderColor: isDarkTheme ? DARK_GRAY : LIGHTEST_GRAY,
+      hasLetterBorderColor: isDarkTheme ? LIGHT_GRAY : GRAY_COLOR
     };
   }, [darkTheme]);
+
+  const [letterBackgrounds, setLetterBackgrounds] = useState([
+    { id: 1, backgroundColor: themeColorsConfig.defaultBackgroundColor },
+    { id: 2, backgroundColor: themeColorsConfig.defaultBackgroundColor },
+    { id: 3, backgroundColor: themeColorsConfig.defaultBackgroundColor },
+    { id: 4, backgroundColor: themeColorsConfig.defaultBackgroundColor },
+    { id: 5, backgroundColor: themeColorsConfig.defaultBackgroundColor },
+  ]);
+  
+  const flipAnimationValues = useRef([
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0),
+  ]).current;
 
   const { container, letterInputStyle } = styles;
 
@@ -150,8 +149,10 @@ const WordRow = ({ row }: { row: number }) => {
   }, [darkTheme]);
 
   const renderLetterInputs = () => {
+    const { defaultBackgroundColor, defaultBorderColor, hasLetterBorderColor } = themeColorsConfig;
+
     return letterBackgrounds.map(({ id, backgroundColor }, index) => {
-      let borderColor = DARK_GRAY;
+      let borderColor = defaultBorderColor;
       let textColor = WHITE_COLOR;
 
       const backgroundIsDefault =
@@ -160,7 +161,11 @@ const WordRow = ({ row }: { row: number }) => {
       if (!backgroundIsDefault) {
         borderColor = backgroundColor;
       } else if (backgroundIsDefault && wordState[index]) {
-        borderColor = LIGHT_GRAY;
+        borderColor = hasLetterBorderColor;
+      }
+
+      if (backgroundIsDefault && darkTheme !== 'on') {
+        textColor = BLACK_COLOR;
       }
 
       if (backgroundIsDefault && darkTheme !== 'on') {
@@ -190,7 +195,7 @@ const WordRow = ({ row }: { row: number }) => {
               {
                 borderColor,
                 backgroundColor: backgroundIsDefault
-                  ? inputsDefaultBackgroundColor
+                  ? defaultBackgroundColor
                   : backgroundColor,
                 color: textColor,
               },
@@ -213,7 +218,7 @@ const styles = StyleSheet.create({
   },
   letterInputStyle: {
     fontSize: 38,
-    borderWidth: 2,
+    borderWidth: 2.5,
     width: 64,
     height: 64,
     margin: 3,
