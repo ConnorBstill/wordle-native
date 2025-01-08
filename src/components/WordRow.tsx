@@ -28,6 +28,8 @@ const WordRow = ({ row }: { row: number }) => {
 
   const correctWord = useAtomValue(correctWordAtom);
   const guessNumber = useAtomValue(guessNumberAtom);
+
+  // When a letter is entered
   const enteredLetter = useAtomValue(enteredLetterAtom);
   const letterPosition = useAtomValue(letterPositionAtom);
 
@@ -43,7 +45,7 @@ const WordRow = ({ row }: { row: number }) => {
       charInWordNotRightPlace: isDarkTheme ? DARK_YELLOW : LIGHT_MODE_YELLOW,
       defaultBackgroundColor: isDarkTheme ? BLACK_COLOR : WHITE_COLOR,
       defaultBorderColor: isDarkTheme ? DARK_GRAY : LIGHTEST_GRAY,
-      hasLetterBorderColor: isDarkTheme ? LIGHT_GRAY : GRAY_COLOR
+      hasLetterBorderColor: isDarkTheme ? LIGHT_GRAY : GRAY_COLOR,
     };
   }, [darkTheme]);
 
@@ -54,7 +56,7 @@ const WordRow = ({ row }: { row: number }) => {
     { id: 4, backgroundColor: themeColorsConfig.defaultBackgroundColor },
     { id: 5, backgroundColor: themeColorsConfig.defaultBackgroundColor },
   ]);
-  
+
   const flipAnimationValues = useRef([
     new Animated.Value(0),
     new Animated.Value(0),
@@ -149,7 +151,8 @@ const WordRow = ({ row }: { row: number }) => {
   }, [darkTheme]);
 
   const renderLetterInputs = () => {
-    const { defaultBackgroundColor, defaultBorderColor, hasLetterBorderColor } = themeColorsConfig;
+    const { defaultBackgroundColor, defaultBorderColor, hasLetterBorderColor } =
+      themeColorsConfig;
 
     return letterBackgrounds.map(({ id, backgroundColor }, index) => {
       let borderColor = defaultBorderColor;

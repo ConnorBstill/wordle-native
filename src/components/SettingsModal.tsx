@@ -13,7 +13,7 @@ import {
   gameIsStartedAtom,
 } from '../jotai-store';
 
-import { WHITE_COLOR, BLACK_COLOR, DARK_GRAY, GREEN_COLOR, GRAY_COLOR } from '../colors';
+import { WHITE_COLOR, BLACK_COLOR, DARK_GRAY, GREEN_COLOR } from '../colors';
 
 interface ScreenModalProps {
   visible?: boolean;
