@@ -47,11 +47,6 @@ const WordRow = ({ row }: { row: number }) => {
     };
   }, [darkTheme]);
 
-  // const defaultBackground = useMemo(
-  //   () => darkTheme === 'on' ? BLACK_COLOR : WHITE_COLOR,
-  //   [darkTheme]
-  // )
-
   const [letterBackgrounds, setLetterBackgrounds] = useState([
     { id: 1, backgroundColor: themeColorsConfig.defaultBackgroundColor },
     { id: 2, backgroundColor: themeColorsConfig.defaultBackgroundColor },
@@ -67,7 +62,6 @@ const WordRow = ({ row }: { row: number }) => {
     new Animated.Value(0),
     new Animated.Value(0),
   ]).current;
-  
 
   const { container, letterInputStyle } = styles;
 
@@ -168,6 +162,10 @@ const WordRow = ({ row }: { row: number }) => {
         borderColor = backgroundColor;
       } else if (backgroundIsDefault && wordState[index]) {
         borderColor = hasLetterBorderColor;
+      }
+
+      if (backgroundIsDefault && darkTheme !== 'on') {
+        textColor = BLACK_COLOR;
       }
 
       if (backgroundIsDefault && darkTheme !== 'on') {
