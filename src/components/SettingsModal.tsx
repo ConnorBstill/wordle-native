@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     width: 20,
   },
   settingsSectionContainerStyle: {
-    borderBottomWidth: 0.5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: DARK_GRAY,
     flexDirection: 'row',
     justifyContent: 'space-between',
