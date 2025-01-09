@@ -4,9 +4,7 @@ import { TouchableOpacity, Text, TouchableOpacityProps, StyleSheet } from 'react
 import { DarkModeContext } from '../../providers/DarkModeContext';
 import { ColorblindModeContext } from '../../providers/ColorBlindModeContext';
 
-import {
-  WHITE_COLOR,
-} from '../../colors';
+import { WHITE_COLOR } from '../../colors';
 
 import { getMainColors } from '../../lib/utils';
 

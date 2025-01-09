@@ -61,12 +61,20 @@ const WordRow = ({ row }: { row: number }) => {
 
   const [letterBackgrounds, setLetterBackgrounds] = useState(letterBackgroundsInitial);
 
-  const flipAnimationValues = useRef([
+  const flipAnimValues = useRef([
     new Animated.Value(0),
     new Animated.Value(0),
     new Animated.Value(0),
     new Animated.Value(0),
     new Animated.Value(0),
+  ]).current;
+
+  const letterInputAnimValues = useRef([
+    new Animated.Value(1),
+    new Animated.Value(1),
+    new Animated.Value(1),
+    new Animated.Value(1),
+    new Animated.Value(1),
   ]).current;
 
   const { container, letterInputStyle } = styles;
@@ -86,7 +94,7 @@ const WordRow = ({ row }: { row: number }) => {
   };
 
   const animatedFlipTiming = (letterIndex: number, toValue: number) => {
-    return Animated.timing(flipAnimationValues[letterIndex], {
+    return Animated.timing(flipAnimValues[letterIndex], {
       toValue,
       duration: 175,
       useNativeDriver: true,
@@ -131,10 +139,29 @@ const WordRow = ({ row }: { row: number }) => {
     });
   };
 
+  const letterInputAnimation = (letterIndex: number) => {
+    const duration = 20;
+    Animated.timing(letterInputAnimValues[letterIndex], {
+      toValue: 1.09,
+      duration: duration,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished) {
+        Animated.timing(letterInputAnimValues[letterIndex], {
+          toValue: 1,
+          duration: duration,
+          useNativeDriver: true,
+        }).start();
+      }
+    });
+  };
+
+  // Do I really need four useEffects?
   useEffect(() => {
     if (row === guessNumber && letterPosition > currentLetterPosition) {
       // Add letter
       setWordState((prevWord) => updateWord(letterPosition, 1, prevWord, enteredLetter));
+      letterInputAnimation(letterPosition);
     } else if (row === guessNumber && letterPosition < currentLetterPosition) {
       // Remove letter
       setWordState((prevWord) => updateWord(letterPosition + 1, -1, prevWord));
@@ -198,10 +225,13 @@ const WordRow = ({ row }: { row: number }) => {
           style={{
             transform: [
               {
-                rotateX: flipAnimationValues[index].interpolate({
+                rotateX: flipAnimValues[index].interpolate({
                   inputRange: [0, 2],
                   outputRange: ['0deg', '180deg'],
                 }),
+              },
+              {
+                scale: letterInputAnimValues[index],
               },
             ],
           }}
