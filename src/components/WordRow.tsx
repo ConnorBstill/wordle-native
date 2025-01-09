@@ -24,7 +24,7 @@ import {
 } from '../colors';
 
 const WordRow = ({ row }: { row: number }) => {
-  const { darkTheme } = useContext(DarkModeContext);
+  const { isDarkTheme } = useContext(DarkModeContext);
   const { isColorblindMode } = useContext(ColorblindModeContext);
 
   const gameIsStartedFlag = useAtomValue(gameIsStartedAtom);
@@ -39,7 +39,6 @@ const WordRow = ({ row }: { row: number }) => {
   const [wordState, setWordState] = useState('');
 
   const themeColorsConfig = useMemo(() => {
-    const isDarkTheme = darkTheme === 'on';
     const { primaryColor, secondaryColor } = getMainColors(isDarkTheme, isColorblindMode);
 
     return {
@@ -50,7 +49,7 @@ const WordRow = ({ row }: { row: number }) => {
       defaultBorderColor: isDarkTheme ? DARK_GRAY : LIGHTEST_GRAY,
       hasLetterBorderColor: isDarkTheme ? LIGHT_GRAY : GRAY_COLOR,
     };
-  }, [darkTheme, isColorblindMode]);
+  }, [isDarkTheme, isColorblindMode]);
 
   const letterBackgroundsInitial = [
     { id: 1, backgroundColor: themeColorsConfig.defaultBackgroundColor },
@@ -152,7 +151,7 @@ const WordRow = ({ row }: { row: number }) => {
         calculateLetterBackground(i);
       }
     }
-  }, [darkTheme, isColorblindMode]);
+  }, [isDarkTheme, isColorblindMode]);
 
   useEffect(() => {
     if (!gameIsStartedFlag) {
@@ -185,7 +184,7 @@ const WordRow = ({ row }: { row: number }) => {
       }
 
       if (
-        (backgroundIsDefault && darkTheme !== 'on') ||
+        (backgroundIsDefault && !isDarkTheme) ||
         ((backgroundColor === charInRightPlace ||
           backgroundColor === charInWordNotRightPlace) &&
           isColorblindMode)

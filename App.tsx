@@ -19,17 +19,17 @@ import { ColorblindModeContext } from './src/providers/ColorBlindModeContext';
 import { BLACK_COLOR, WHITE_COLOR } from './src/colors';
 
 export default function App() {
-  const [darkTheme, setDarkTheme] = useState('on');
-  const darkModeProviderValue = { darkTheme, setDarkTheme }
+  const [isDarkTheme, setDarkTheme] = useState(true);
+  const darkModeProviderValue = { isDarkTheme, setDarkTheme }
 
   const [isColorblindMode, setColorblindMode] = useState(false);
   const colorblindModeProviderValue = { isColorblindMode, setColorblindMode }
 
   const darkThemeConfigs = {
     pageBackgroundColor: {
-      backgroundColor: darkTheme === 'on' ? BLACK_COLOR : WHITE_COLOR
+      backgroundColor: isDarkTheme ? BLACK_COLOR : WHITE_COLOR
     },
-    toolbarStyle: darkTheme === 'on' ? 'light-content' : 'dark-content'
+    toolbarStyle: isDarkTheme ? 'light-content' : 'dark-content'
   }
 
   const { 

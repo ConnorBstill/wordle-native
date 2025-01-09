@@ -10,12 +10,12 @@ import { settingsModalShowingAtom } from '../jotai-store';
 import { DARK_GRAY, WHITE_COLOR, BLACK_COLOR } from '../colors';
 
 const Toolbar = () => {
-  const { darkTheme } = useContext(DarkModeContext);
+  const { isDarkTheme } = useContext(DarkModeContext);
   const setSettingsModalShowing = useSetAtom(settingsModalShowingAtom);
 
   const textColor = useMemo(
-    () => (darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR),
-    [darkTheme]
+    () => (isDarkTheme ? WHITE_COLOR : BLACK_COLOR),
+    [isDarkTheme]
   );
 
   const { containerStyle, titleContainerStyle, titleStyle } = styles;

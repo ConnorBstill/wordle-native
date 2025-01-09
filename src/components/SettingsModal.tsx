@@ -5,7 +5,7 @@ import { Icon } from '@rneui/themed';
 
 import { DarkModeContext } from '../providers/DarkModeContext';
 import { ColorblindModeContext } from '../providers/ColorBlindModeContext';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 
 import {
   settingsModalShowingAtom,
@@ -22,7 +22,7 @@ import {
 
 import { Button } from '../components/common/Button';
 
-import { WHITE_COLOR, BLACK_COLOR, DARK_GRAY, GREEN_COLOR, LIGHT_GRAY } from '../colors';
+import { WHITE_COLOR, BLACK_COLOR, DARK_GRAY, LIGHT_GRAY } from '../colors';
 import { WORDS } from '../lib/words';
 import { showToast, getMainColors } from '../lib/utils';
 
@@ -31,7 +31,7 @@ interface ScreenModalProps {
 }
 
 const SettingsModal = (props: ScreenModalProps) => {
-  const { darkTheme, setDarkTheme } = useContext(DarkModeContext);
+  const { isDarkTheme, setDarkTheme } = useContext(DarkModeContext);
   const { isColorblindMode, setColorblindMode } = useContext(ColorblindModeContext);
 
   const [gameIsStarted, setGameIsStarted] = useAtom(gameIsStartedAtom);
@@ -49,13 +49,13 @@ const SettingsModal = (props: ScreenModalProps) => {
   const [hardModeEnabled, setHardModeEnabled] = useAtom(hardModeEnabledAtom);
 
   const { primaryColor, secondaryColor } = useMemo(
-    () => getMainColors(darkTheme === 'on', isColorblindMode),
-    [darkTheme, isColorblindMode]
+    () => getMainColors(isDarkTheme, isColorblindMode),
+    [isDarkTheme, isColorblindMode]
   );
 
   const textColor = useMemo(() => {
-    return { color: darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR };
-  }, [darkTheme]);
+    return { color: isDarkTheme ? WHITE_COLOR : BLACK_COLOR };
+  }, [isDarkTheme]);
 
   const {
     innerContainerStyles,
@@ -79,7 +79,7 @@ const SettingsModal = (props: ScreenModalProps) => {
   };
 
   const toggleDarkTheme = (value: boolean) => {
-    setDarkTheme(value ? 'on' : 'off');
+    setDarkTheme(value);
   };
 
   const toggleHighContrastMode = (value: boolean) => {
@@ -113,7 +113,7 @@ const SettingsModal = (props: ScreenModalProps) => {
         <View
           style={[
             modalViewStyle,
-            { backgroundColor: darkTheme === 'on' ? BLACK_COLOR : WHITE_COLOR },
+            { backgroundColor: isDarkTheme ? BLACK_COLOR : WHITE_COLOR },
           ]}
         >
           <View style={headerContainerStyle}>
@@ -126,7 +126,7 @@ const SettingsModal = (props: ScreenModalProps) => {
               style={closeIconStyle}
               name="close"
               type="material"
-              color={darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR}
+              color={isDarkTheme ? WHITE_COLOR : BLACK_COLOR}
             />
           </View>
 
@@ -155,7 +155,7 @@ const SettingsModal = (props: ScreenModalProps) => {
             </View>
 
             <Switch
-              value={darkTheme === 'on' ? true : false}
+              value={isDarkTheme ? true : false}
               onValueChange={toggleDarkTheme}
               style={settingsSwitchStyle}
               thumbColor={WHITE_COLOR}

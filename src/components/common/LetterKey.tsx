@@ -18,10 +18,6 @@ import {
 
 import {
   WHITE_COLOR,
-  GREEN_COLOR,
-  DARK_YELLOW,
-  LIGHT_MODE_GREEN,
-  LIGHT_MODE_YELLOW,
   GRAY_COLOR,
   DARK_GRAY,
   BLACK_COLOR,
@@ -36,7 +32,7 @@ interface LetterKeyProps {
 }
 
 const LetterKey = ({ keyTitle }: LetterKeyProps) => {
-  const { darkTheme } = useContext(DarkModeContext);
+  const { isDarkTheme } = useContext(DarkModeContext);
   const { isColorblindMode } = useContext(ColorblindModeContext);
 
   const [correctWord] = useAtom(correctWordAtom);
@@ -51,7 +47,6 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
   const letterInCorrectWord = correctWord.indexOf(keyTitle) !== -1;
 
   const themeColorsConfig = useMemo(() => {
-    const isDarkTheme = darkTheme === 'on';
     const { primaryColor, secondaryColor } = getMainColors(isDarkTheme, isColorblindMode);
 
     return {
@@ -61,7 +56,7 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
       charInWordNotRightPlace: secondaryColor,
       charDefaultText: isDarkTheme ? WHITE_COLOR : BLACK_COLOR,
     };
-  }, [darkTheme, isColorblindMode]);
+  }, [isDarkTheme, isColorblindMode]);
 
   const setTextColor = () => {
     const { charDefaultText } = themeColorsConfig;
@@ -184,7 +179,7 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
         <Icon
           name={keyTitle}
           type="ionicon"
-          color={darkTheme === 'on' ? WHITE_COLOR : BLACK_COLOR}
+          color={isDarkTheme ? WHITE_COLOR : BLACK_COLOR}
         />
       );
     } else {

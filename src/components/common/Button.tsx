@@ -5,10 +5,6 @@ import { DarkModeContext } from '../../providers/DarkModeContext';
 import { ColorblindModeContext } from '../../providers/ColorBlindModeContext';
 
 import {
-  GREEN_COLOR,
-  LIGHT_MODE_GREEN,
-  DARK_YELLOW,
-  LIGHT_MODE_YELLOW,
   WHITE_COLOR,
 } from '../../colors';
 
@@ -19,10 +15,8 @@ interface AppButtonProps extends TouchableOpacityProps {
 }
 
 const Button = ({ onPress, children, type, style }: AppButtonProps) => {
-  const { darkTheme } = useContext(DarkModeContext);
+  const { isDarkTheme } = useContext(DarkModeContext);
   const { isColorblindMode } = useContext(ColorblindModeContext);
-
-  const isDarkTheme = darkTheme === 'on';
 
   const themeColorsConfig = {
     primaryBackgroundColor: getMainColors(isDarkTheme, isColorblindMode).primaryColor,
