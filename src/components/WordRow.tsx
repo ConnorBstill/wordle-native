@@ -8,7 +8,7 @@ import {
   letterPositionAtom,
   guessNumberAtom,
   enteredLetterAtom,
-  gameIsStartedAtom
+  gameIsStartedAtom,
 } from '../jotai-store';
 
 import {
@@ -160,7 +160,7 @@ const WordRow = ({ row }: { row: number }) => {
       setLetterBackgrounds(letterBackgroundsInitial);
       setCurrentLetterPosition(-1);
     }
-  }, [gameIsStartedFlag])
+  }, [gameIsStartedFlag]);
 
   const renderLetterInputs = () => {
     const { defaultBackgroundColor, defaultBorderColor, hasLetterBorderColor } =

@@ -29,18 +29,7 @@ import { showToast } from '../lib/utils';
 interface ScreenModalProps {
   visible?: boolean;
 }
-// export const settingsModalShowingAtom = atom(false);
-// export const hardModeEnabledAtom = atom(false);
-// export const highContrastModeEnabledAtom = atom(false);
 
-// export const correctWordAtom = atom(WORD_OF_THE_DAY.toUpperCase());
-// export const gameIsStartedAtom = atom(false);
-// export const gameIsOverAtom = atom(false);
-// export const guessNumberAtom = atom(1);
-// export const letterPositionAtom = atom(-1);
-// export const guessedWordsAtom = atom<string[]>([]);
-// export const currentWordAtom = atom('');
-// export const enteredLetterAtom = atom('');
 const SettingsModal = (props: ScreenModalProps) => {
   const { darkTheme, setDarkTheme } = useContext(DarkModeContext);
 
@@ -75,7 +64,7 @@ const SettingsModal = (props: ScreenModalProps) => {
     settingsSectionSubtextStyle,
     settingsSwitchStyle,
     settingsSectionContainerStyle,
-    resetButtonContainerStyle
+    resetButtonContainerStyle,
   } = styles;
 
   const closeSettingsModal = () => {
@@ -96,7 +85,7 @@ const SettingsModal = (props: ScreenModalProps) => {
 
   const handleResetGame = () => {
     const WORD_OF_THE_DAY = WORDS[Math.floor(Math.random() * WORDS.length)].toUpperCase();
-    
+
     setGuessNumber(1);
     setLetterPosition(-1);
     setGuessedWords([]);
@@ -107,7 +96,7 @@ const SettingsModal = (props: ScreenModalProps) => {
     setCorrectWord(WORD_OF_THE_DAY);
 
     showToast('Game reset');
-  }
+  };
 
   return (
     <Modal
@@ -193,7 +182,9 @@ const SettingsModal = (props: ScreenModalProps) => {
           </View>
 
           <View style={resetButtonContainerStyle}>
-            <Button onPress={handleResetGame} type="primary">Reset Game</Button>
+            <Button onPress={handleResetGame} type="primary">
+              Reset Game
+            </Button>
           </View>
         </View>
       </View>
@@ -261,8 +252,8 @@ const styles = StyleSheet.create({
   resetButtonContainerStyle: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'center'
-  }
+    justifyContent: 'center',
+  },
 });
 
 export default SettingsModal;

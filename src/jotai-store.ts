@@ -2,7 +2,6 @@ import { atom } from 'jotai';
 
 import { WORDS } from './lib/words';
 
-
 const WORD_OF_THE_DAY = WORDS[Math.floor(Math.random() * WORDS.length)].toUpperCase();
 console.log('WORD_OF_THE_DAY', WORD_OF_THE_DAY);
 

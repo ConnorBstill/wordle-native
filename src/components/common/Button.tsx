@@ -3,16 +3,16 @@ import { TouchableOpacity, Text, TouchableOpacityProps, StyleSheet } from 'react
 
 import { DarkModeContext } from '../../providers/DarkModeContext';
 
-import { 
-  GREEN_COLOR, 
-  LIGHT_MODE_GREEN, 
-  DARK_YELLOW, 
+import {
+  GREEN_COLOR,
+  LIGHT_MODE_GREEN,
+  DARK_YELLOW,
   LIGHT_MODE_YELLOW,
-  WHITE_COLOR
+  WHITE_COLOR,
 } from '../../colors';
 
 interface AppButtonProps extends TouchableOpacityProps {
-  type: 'primary' | 'secondary'
+  type: 'primary' | 'secondary';
 }
 
 const Button = ({ onPress, children, type, style }: AppButtonProps) => {
@@ -22,8 +22,8 @@ const Button = ({ onPress, children, type, style }: AppButtonProps) => {
 
   const themeColorsConfig = {
     primaryBackgroundColor: isDarkTheme ? GREEN_COLOR : LIGHT_MODE_GREEN,
-    secondaryBackgroundColor: isDarkTheme ? DARK_YELLOW : LIGHT_MODE_YELLOW
-  }
+    secondaryBackgroundColor: isDarkTheme ? DARK_YELLOW : LIGHT_MODE_YELLOW,
+  };
 
   const { primaryBackgroundColor, secondaryBackgroundColor } = themeColorsConfig;
   const { containerStyle, textStyle } = styles;
@@ -33,15 +33,17 @@ const Button = ({ onPress, children, type, style }: AppButtonProps) => {
       onPress={onPress}
       style={[
         containerStyle,
-        { 
-          backgroundColor: type === 'primary' ?  primaryBackgroundColor : secondaryBackgroundColor
+        {
+          backgroundColor:
+            type === 'primary' ? primaryBackgroundColor : secondaryBackgroundColor,
         },
-        style
-      ]}>
+        style,
+      ]}
+    >
       <Text style={textStyle}>{children}</Text>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   containerStyle: {
@@ -53,8 +55,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: WHITE_COLOR,
-
-  }
+  },
 });
 
-export { Button }
+export { Button };
