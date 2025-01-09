@@ -4,12 +4,12 @@ import { Modal, Text, View, Switch, StyleSheet } from 'react-native';
 import { Icon } from '@rneui/themed';
 
 import { DarkModeContext } from '../providers/DarkModeContext';
+import { ColorblindModeContext } from '../providers/ColorBlindModeContext';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 import {
   settingsModalShowingAtom,
   hardModeEnabledAtom,
-  highContrastModeEnabledAtom,
   gameIsStartedAtom,
   correctWordAtom,
   gameIsOverAtom,
@@ -24,7 +24,7 @@ import { Button } from '../components/common/Button';
 
 import { WHITE_COLOR, BLACK_COLOR, DARK_GRAY, GREEN_COLOR, LIGHT_GRAY } from '../colors';
 import { WORDS } from '../lib/words';
-import { showToast } from '../lib/utils';
+import { showToast, getMainColors } from '../lib/utils';
 
 interface ScreenModalProps {
   visible?: boolean;
@@ -32,6 +32,7 @@ interface ScreenModalProps {
 
 const SettingsModal = (props: ScreenModalProps) => {
   const { darkTheme, setDarkTheme } = useContext(DarkModeContext);
+  const { isColorblindMode, setColorblindMode } = useContext(ColorblindModeContext);
 
   const [gameIsStarted, setGameIsStarted] = useAtom(gameIsStartedAtom);
   const setCorrectWord = useSetAtom(correctWordAtom);
@@ -46,8 +47,10 @@ const SettingsModal = (props: ScreenModalProps) => {
     settingsModalShowingAtom
   );
   const [hardModeEnabled, setHardModeEnabled] = useAtom(hardModeEnabledAtom);
-  const [highContrastModeEnabled, setHighContrastModeEnabled] = useAtom(
-    highContrastModeEnabledAtom
+
+  const { primaryColor, secondaryColor } = useMemo(
+    () => getMainColors(darkTheme === 'on', isColorblindMode),
+    [darkTheme, isColorblindMode]
   );
 
   const textColor = useMemo(() => {
@@ -79,8 +82,8 @@ const SettingsModal = (props: ScreenModalProps) => {
     setDarkTheme(value ? 'on' : 'off');
   };
 
-  const toggleHighContrastMode = () => {
-    setHighContrastModeEnabled((prevVal) => !prevVal);
+  const toggleHighContrastMode = (value: boolean) => {
+    setColorblindMode(value);
   };
 
   const handleResetGame = () => {
@@ -141,7 +144,7 @@ const SettingsModal = (props: ScreenModalProps) => {
               disabled={gameIsStarted}
               style={settingsSwitchStyle}
               thumbColor={WHITE_COLOR}
-              trackColor={{ false: DARK_GRAY, true: GREEN_COLOR }}
+              trackColor={{ false: DARK_GRAY, true: primaryColor }}
               ios_backgroundColor={DARK_GRAY}
             />
           </View>
@@ -156,7 +159,7 @@ const SettingsModal = (props: ScreenModalProps) => {
               onValueChange={toggleDarkTheme}
               style={settingsSwitchStyle}
               thumbColor={WHITE_COLOR}
-              trackColor={{ false: DARK_GRAY, true: GREEN_COLOR }}
+              trackColor={{ false: DARK_GRAY, true: primaryColor }}
               ios_backgroundColor={DARK_GRAY}
             />
           </View>
@@ -172,11 +175,11 @@ const SettingsModal = (props: ScreenModalProps) => {
             </View>
 
             <Switch
-              value={highContrastModeEnabled}
-              onChange={toggleHighContrastMode}
+              value={isColorblindMode}
+              onValueChange={toggleHighContrastMode}
               style={settingsSwitchStyle}
               thumbColor={WHITE_COLOR}
-              trackColor={{ false: DARK_GRAY, true: 'blue' }}
+              trackColor={{ false: DARK_GRAY, true: primaryColor }}
               ios_backgroundColor={DARK_GRAY}
             />
           </View>

@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@rneui/themed';
 
 import { DarkModeContext } from '../../providers/DarkModeContext';
-import { useAtom } from 'jotai';
+import { ColorblindModeContext } from '../../providers/ColorBlindModeContext';
+import { useAtom, useSetAtom } from 'jotai';
 import {
   correctWordAtom,
   letterPositionAtom,
@@ -28,7 +29,7 @@ import {
 } from '../../colors';
 import { WORDS } from '../../lib/words';
 
-import { showToast } from '../../lib/utils';
+import { showToast, getMainColors } from '../../lib/utils';
 
 interface LetterKeyProps {
   keyTitle: string;
@@ -36,6 +37,7 @@ interface LetterKeyProps {
 
 const LetterKey = ({ keyTitle }: LetterKeyProps) => {
   const { darkTheme } = useContext(DarkModeContext);
+  const { isColorblindMode } = useContext(ColorblindModeContext);
 
   const [correctWord] = useAtom(correctWordAtom);
   const [gameIsOver, setGameIsOver] = useAtom(gameIsOverAtom);
@@ -43,20 +45,23 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
   const [guessedWords, setGuessedWords] = useAtom(guessedWordsAtom);
   const [letterPosition, setLetterPosition] = useAtom(letterPositionAtom);
   const [currentWord, setCurrentWord] = useAtom(currentWordAtom);
-  const [enteredLetter, setEnteredLetter] = useAtom(enteredLetterAtom);
+  const setEnteredLetter = useSetAtom(enteredLetterAtom);
   const [gameIsStarted, setGameIsStarted] = useAtom(gameIsStartedAtom);
+
+  const letterInCorrectWord = correctWord.indexOf(keyTitle) !== -1;
 
   const themeColorsConfig = useMemo(() => {
     const isDarkTheme = darkTheme === 'on';
+    const { primaryColor, secondaryColor } = getMainColors(isDarkTheme, isColorblindMode);
 
     return {
       charNotGuessed: isDarkTheme ? GRAY_COLOR : LIGHTEST_GRAY,
       charGuessedNotInWord: isDarkTheme ? DARK_GRAY : GRAY_COLOR,
-      charInRightPlace: isDarkTheme ? GREEN_COLOR : LIGHT_MODE_GREEN,
-      charInWordNotRightPlace: isDarkTheme ? DARK_YELLOW : LIGHT_MODE_YELLOW,
+      charInRightPlace: primaryColor,
+      charInWordNotRightPlace: secondaryColor,
       charDefaultText: isDarkTheme ? WHITE_COLOR : BLACK_COLOR,
     };
-  }, [darkTheme]);
+  }, [darkTheme, isColorblindMode]);
 
   const setTextColor = () => {
     const { charDefaultText } = themeColorsConfig;
@@ -67,8 +72,13 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
       guessedWords.forEach((word: string) => {
         const letterGuessed = word.indexOf(keyTitle) !== -1;
 
-        if (letterGuessed) {
+        if (
+          (letterGuessed && !isColorblindMode) ||
+          (letterGuessed && !letterInCorrectWord)
+        ) {
           color = WHITE_COLOR;
+        } else if (letterGuessed && isColorblindMode && letterInCorrectWord) {
+          color = BLACK_COLOR;
         }
       });
     }
@@ -85,8 +95,6 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
     } = themeColorsConfig;
 
     let backgroundColor = charNotGuessed;
-
-    const letterInCorrectWord = correctWord.indexOf(keyTitle) !== -1;
 
     guessedWords.forEach((guessedWord: string) => {
       const guessedWordLetterIndex = guessedWord.indexOf(keyTitle);

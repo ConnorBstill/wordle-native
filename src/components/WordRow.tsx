@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useContext, useMemo } from 'react';
 import { Animated, View, StyleSheet, TextInput } from 'react-native';
 
 import { DarkModeContext } from '../providers/DarkModeContext';
+import { ColorblindModeContext } from '../providers/ColorBlindModeContext';
 import { useAtomValue } from 'jotai';
 import {
   correctWordAtom,
@@ -11,13 +12,11 @@ import {
   gameIsStartedAtom,
 } from '../jotai-store';
 
+import { getMainColors } from '../lib/utils';
+
 import {
   WHITE_COLOR,
   DARK_GRAY,
-  GREEN_COLOR,
-  DARK_YELLOW,
-  LIGHT_MODE_GREEN,
-  LIGHT_MODE_YELLOW,
   BLACK_COLOR,
   LIGHT_GRAY,
   GRAY_COLOR,
@@ -26,6 +25,7 @@ import {
 
 const WordRow = ({ row }: { row: number }) => {
   const { darkTheme } = useContext(DarkModeContext);
+  const { isColorblindMode } = useContext(ColorblindModeContext);
 
   const gameIsStartedFlag = useAtomValue(gameIsStartedAtom);
   const correctWord = useAtomValue(correctWordAtom);
@@ -40,16 +40,17 @@ const WordRow = ({ row }: { row: number }) => {
 
   const themeColorsConfig = useMemo(() => {
     const isDarkTheme = darkTheme === 'on';
+    const { primaryColor, secondaryColor } = getMainColors(isDarkTheme, isColorblindMode);
 
     return {
       charGuessedNotInWord: isDarkTheme ? DARK_GRAY : GRAY_COLOR,
-      charInRightPlace: isDarkTheme ? GREEN_COLOR : LIGHT_MODE_GREEN,
-      charInWordNotRightPlace: isDarkTheme ? DARK_YELLOW : LIGHT_MODE_YELLOW,
+      charInRightPlace: primaryColor,
+      charInWordNotRightPlace: secondaryColor,
       defaultBackgroundColor: isDarkTheme ? BLACK_COLOR : WHITE_COLOR,
       defaultBorderColor: isDarkTheme ? DARK_GRAY : LIGHTEST_GRAY,
       hasLetterBorderColor: isDarkTheme ? LIGHT_GRAY : GRAY_COLOR,
     };
-  }, [darkTheme]);
+  }, [darkTheme, isColorblindMode]);
 
   const letterBackgroundsInitial = [
     { id: 1, backgroundColor: themeColorsConfig.defaultBackgroundColor },
@@ -115,8 +116,7 @@ const WordRow = ({ row }: { row: number }) => {
     });
   };
 
-  // Animates each letter sequentially after a guess
-  const startLetterAnimation = (letterIndex: number): any => {
+  const startGuessLetterAnimation = (letterIndex: number): any => {
     if (letterIndex > 4) return;
 
     // Rotate halfway
@@ -126,7 +126,7 @@ const WordRow = ({ row }: { row: number }) => {
 
         // Rotate back after setting background color and go to next letter
         animatedFlipTiming(letterIndex, 0).start(({ finished }) => {
-          if (finished) startLetterAnimation(letterIndex + 1);
+          if (finished) startGuessLetterAnimation(letterIndex + 1);
         });
       }
     });
@@ -143,7 +143,7 @@ const WordRow = ({ row }: { row: number }) => {
   }, [letterPosition]);
 
   useEffect(() => {
-    if (guessNumber - 1 === row) startLetterAnimation(0);
+    if (guessNumber - 1 === row) startGuessLetterAnimation(0);
   }, [guessNumber]);
 
   useEffect(() => {
@@ -152,7 +152,7 @@ const WordRow = ({ row }: { row: number }) => {
         calculateLetterBackground(i);
       }
     }
-  }, [darkTheme]);
+  }, [darkTheme, isColorblindMode]);
 
   useEffect(() => {
     if (!gameIsStartedFlag) {
@@ -163,8 +163,13 @@ const WordRow = ({ row }: { row: number }) => {
   }, [gameIsStartedFlag]);
 
   const renderLetterInputs = () => {
-    const { defaultBackgroundColor, defaultBorderColor, hasLetterBorderColor } =
-      themeColorsConfig;
+    const {
+      defaultBackgroundColor,
+      defaultBorderColor,
+      hasLetterBorderColor,
+      charInRightPlace,
+      charInWordNotRightPlace,
+    } = themeColorsConfig;
 
     return letterBackgrounds.map(({ id, backgroundColor }, index) => {
       let borderColor = defaultBorderColor;
@@ -179,11 +184,12 @@ const WordRow = ({ row }: { row: number }) => {
         borderColor = hasLetterBorderColor;
       }
 
-      if (backgroundIsDefault && darkTheme !== 'on') {
-        textColor = BLACK_COLOR;
-      }
-
-      if (backgroundIsDefault && darkTheme !== 'on') {
+      if (
+        (backgroundIsDefault && darkTheme !== 'on') ||
+        ((backgroundColor === charInRightPlace ||
+          backgroundColor === charInWordNotRightPlace) &&
+          isColorblindMode)
+      ) {
         textColor = BLACK_COLOR;
       }
 

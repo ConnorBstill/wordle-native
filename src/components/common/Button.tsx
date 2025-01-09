@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { TouchableOpacity, Text, TouchableOpacityProps, StyleSheet } from 'react-native';
 
 import { DarkModeContext } from '../../providers/DarkModeContext';
+import { ColorblindModeContext } from '../../providers/ColorBlindModeContext';
 
 import {
   GREEN_COLOR,
@@ -11,18 +12,21 @@ import {
   WHITE_COLOR,
 } from '../../colors';
 
+import { getMainColors } from '../../lib/utils';
+
 interface AppButtonProps extends TouchableOpacityProps {
   type: 'primary' | 'secondary';
 }
 
 const Button = ({ onPress, children, type, style }: AppButtonProps) => {
   const { darkTheme } = useContext(DarkModeContext);
+  const { isColorblindMode } = useContext(ColorblindModeContext);
 
   const isDarkTheme = darkTheme === 'on';
 
   const themeColorsConfig = {
-    primaryBackgroundColor: isDarkTheme ? GREEN_COLOR : LIGHT_MODE_GREEN,
-    secondaryBackgroundColor: isDarkTheme ? DARK_YELLOW : LIGHT_MODE_YELLOW,
+    primaryBackgroundColor: getMainColors(isDarkTheme, isColorblindMode).primaryColor,
+    secondaryBackgroundColor: getMainColors(isDarkTheme, isColorblindMode).secondaryColor,
   };
 
   const { primaryBackgroundColor, secondaryBackgroundColor } = themeColorsConfig;

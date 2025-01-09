@@ -14,12 +14,16 @@ import KeyboardSection from './src/components/KeyboardSection';
 import SettingsModal from './src/components/SettingsModal';
 
 import { DarkModeContext } from './src/providers/DarkModeContext';
+import { ColorblindModeContext } from './src/providers/ColorBlindModeContext';
 
 import { BLACK_COLOR, WHITE_COLOR } from './src/colors';
 
 export default function App() {
   const [darkTheme, setDarkTheme] = useState('on');
   const darkModeProviderValue = { darkTheme, setDarkTheme }
+
+  const [isColorblindMode, setColorblindMode] = useState(false);
+  const colorblindModeProviderValue = { isColorblindMode, setColorblindMode }
 
   const darkThemeConfigs = {
     pageBackgroundColor: {
@@ -60,31 +64,33 @@ export default function App() {
   return (
     <RootSiblingParent>
       <JotaiProvider>
-        <DarkModeContext.Provider value={darkModeProviderValue}>
-          <SafeAreaView style={[container, darkThemeConfigs.pageBackgroundColor]} onLayout={onLayoutRootView}>
-            <View style={fullContainer}>
-              <StatusBar barStyle={darkThemeConfigs.toolbarStyle as StatusBarStyle} />
-              <Toolbar />
+        <ColorblindModeContext.Provider value={colorblindModeProviderValue}>
+          <DarkModeContext.Provider value={darkModeProviderValue}>
+            <SafeAreaView style={[container, darkThemeConfigs.pageBackgroundColor]} onLayout={onLayoutRootView}>
+              <View style={fullContainer}>
+                <StatusBar barStyle={darkThemeConfigs.toolbarStyle as StatusBarStyle} />
+                <Toolbar />
 
-              <View style ={contentContainer}>
-                <View style={guessesContainer}>
-                  <WordRow row={1} />
-                  <WordRow row={2} />
-                  <WordRow row={3} />
-                  <WordRow row={4} />
-                  <WordRow row={5} />
-                  <WordRow row={6} />
-                </View>
+                <View style ={contentContainer}>
+                  <View style={guessesContainer}>
+                    <WordRow row={1} />
+                    <WordRow row={2} />
+                    <WordRow row={3} />
+                    <WordRow row={4} />
+                    <WordRow row={5} />
+                    <WordRow row={6} />
+                  </View>
 
-                <View>
-                  <KeyboardSection />
+                  <View>
+                    <KeyboardSection />
+                  </View>
                 </View>
               </View>
-            </View>
 
-            <SettingsModal />
-          </SafeAreaView>
-        </DarkModeContext.Provider>
+              <SettingsModal />
+            </SafeAreaView>
+          </DarkModeContext.Provider>
+        </ColorblindModeContext.Provider>
       </JotaiProvider>
     </RootSiblingParent>
   );
@@ -109,7 +115,6 @@ const styles = StyleSheet.create({
   },
   guessesContainer: {
     width: '100%',
-    // backgroundColor: 'red',
     alignContent: 'center',
     justifyContent: 'center',
   }

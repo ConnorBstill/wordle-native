@@ -7,6 +7,9 @@ export const DARK_YELLOW = '#b59f3b';
 export const LIGHT_MODE_GREEN = '#79a86b';
 export const LIGHT_MODE_YELLOW = '#c6b466';
 
+export const COLORBLIND_PRIMARY = '#e67f4a';
+export const COLORBLIND_SECONDARY = '#91c0f4';
+
 export const DARK_GRAY = '#3a3a3c';
 export const GRAY_COLOR = '#818384';
 export const LIGHT_GRAY = '#565758';
