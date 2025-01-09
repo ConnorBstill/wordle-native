@@ -4,30 +4,58 @@ import { Modal, Text, View, Switch, StyleSheet } from 'react-native';
 import { Icon } from '@rneui/themed';
 
 import { DarkModeContext } from '../providers/DarkModeContext';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 import {
   settingsModalShowingAtom,
   hardModeEnabledAtom,
   highContrastModeEnabledAtom,
   gameIsStartedAtom,
+  correctWordAtom,
+  gameIsOverAtom,
+  guessNumberAtom,
+  letterPositionAtom,
+  guessedWordsAtom,
+  currentWordAtom,
+  enteredLetterAtom,
 } from '../jotai-store';
 
-import { WHITE_COLOR, BLACK_COLOR, DARK_GRAY, GREEN_COLOR } from '../colors';
+import { Button } from '../components/common/Button';
+
+import { WHITE_COLOR, BLACK_COLOR, DARK_GRAY, GREEN_COLOR, LIGHT_GRAY } from '../colors';
+import { WORDS } from '../lib/words';
+import { showToast } from '../lib/utils';
 
 interface ScreenModalProps {
   visible?: boolean;
 }
+// export const settingsModalShowingAtom = atom(false);
+// export const hardModeEnabledAtom = atom(false);
+// export const highContrastModeEnabledAtom = atom(false);
 
+// export const correctWordAtom = atom(WORD_OF_THE_DAY.toUpperCase());
+// export const gameIsStartedAtom = atom(false);
+// export const gameIsOverAtom = atom(false);
+// export const guessNumberAtom = atom(1);
+// export const letterPositionAtom = atom(-1);
+// export const guessedWordsAtom = atom<string[]>([]);
+// export const currentWordAtom = atom('');
+// export const enteredLetterAtom = atom('');
 const SettingsModal = (props: ScreenModalProps) => {
   const { darkTheme, setDarkTheme } = useContext(DarkModeContext);
+
+  const [gameIsStarted, setGameIsStarted] = useAtom(gameIsStartedAtom);
+  const setCorrectWord = useSetAtom(correctWordAtom);
+  const setGameIsOver = useSetAtom(gameIsOverAtom);
+  const setGuessNumber = useSetAtom(guessNumberAtom);
+  const setLetterPosition = useSetAtom(letterPositionAtom);
+  const setGuessedWords = useSetAtom(guessedWordsAtom);
+  const setCurrentWord = useSetAtom(currentWordAtom);
+  const setEnteredLetter = useSetAtom(enteredLetterAtom);
 
   const [settingsModalShowing, setSettingsModalShowing] = useAtom(
     settingsModalShowingAtom
   );
-
-  const gameIsStarted = useAtomValue(gameIsStartedAtom);
-
   const [hardModeEnabled, setHardModeEnabled] = useAtom(hardModeEnabledAtom);
   const [highContrastModeEnabled, setHighContrastModeEnabled] = useAtom(
     highContrastModeEnabledAtom
@@ -47,6 +75,7 @@ const SettingsModal = (props: ScreenModalProps) => {
     settingsSectionSubtextStyle,
     settingsSwitchStyle,
     settingsSectionContainerStyle,
+    resetButtonContainerStyle
   } = styles;
 
   const closeSettingsModal = () => {
@@ -64,6 +93,21 @@ const SettingsModal = (props: ScreenModalProps) => {
   const toggleHighContrastMode = () => {
     setHighContrastModeEnabled((prevVal) => !prevVal);
   };
+
+  const handleResetGame = () => {
+    const WORD_OF_THE_DAY = WORDS[Math.floor(Math.random() * WORDS.length)].toUpperCase();
+    
+    setGuessNumber(1);
+    setLetterPosition(-1);
+    setGuessedWords([]);
+    setCurrentWord('');
+    setEnteredLetter('');
+    setGameIsOver(false);
+    setGameIsStarted(false);
+    setCorrectWord(WORD_OF_THE_DAY);
+
+    showToast('Game reset');
+  }
 
   return (
     <Modal
@@ -147,6 +191,10 @@ const SettingsModal = (props: ScreenModalProps) => {
               ios_backgroundColor={DARK_GRAY}
             />
           </View>
+
+          <View style={resetButtonContainerStyle}>
+            <Button onPress={handleResetGame} type="primary">Reset Game</Button>
+          </View>
         </View>
       </View>
     </Modal>
@@ -161,6 +209,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalViewStyle: {
+    // alignItems: 'center'
     backgroundColor: BLACK_COLOR,
     borderWidth: 0.5,
     borderColor: DARK_GRAY,
@@ -189,7 +238,7 @@ const styles = StyleSheet.create({
   },
   settingsSectionContainerStyle: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: DARK_GRAY,
+    borderBottomColor: LIGHT_GRAY,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -209,6 +258,11 @@ const styles = StyleSheet.create({
   settingsSwitchStyle: {
     transform: [{ scaleX: 0.65 }, { scaleY: 0.65 }],
   },
+  resetButtonContainerStyle: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  }
 });
 
 export default SettingsModal;

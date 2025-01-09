@@ -8,6 +8,7 @@ import {
   letterPositionAtom,
   guessNumberAtom,
   enteredLetterAtom,
+  gameIsStartedAtom
 } from '../jotai-store';
 
 import {
@@ -26,6 +27,7 @@ import {
 const WordRow = ({ row }: { row: number }) => {
   const { darkTheme } = useContext(DarkModeContext);
 
+  const gameIsStartedFlag = useAtomValue(gameIsStartedAtom);
   const correctWord = useAtomValue(correctWordAtom);
   const guessNumber = useAtomValue(guessNumberAtom);
 
@@ -49,13 +51,15 @@ const WordRow = ({ row }: { row: number }) => {
     };
   }, [darkTheme]);
 
-  const [letterBackgrounds, setLetterBackgrounds] = useState([
+  const letterBackgroundsInitial = [
     { id: 1, backgroundColor: themeColorsConfig.defaultBackgroundColor },
     { id: 2, backgroundColor: themeColorsConfig.defaultBackgroundColor },
     { id: 3, backgroundColor: themeColorsConfig.defaultBackgroundColor },
     { id: 4, backgroundColor: themeColorsConfig.defaultBackgroundColor },
     { id: 5, backgroundColor: themeColorsConfig.defaultBackgroundColor },
-  ]);
+  ];
+
+  const [letterBackgrounds, setLetterBackgrounds] = useState(letterBackgroundsInitial);
 
   const flipAnimationValues = useRef([
     new Animated.Value(0),
@@ -149,6 +153,14 @@ const WordRow = ({ row }: { row: number }) => {
       }
     }
   }, [darkTheme]);
+
+  useEffect(() => {
+    if (!gameIsStartedFlag) {
+      setWordState('');
+      setLetterBackgrounds(letterBackgroundsInitial);
+      setCurrentLetterPosition(-1);
+    }
+  }, [gameIsStartedFlag])
 
   const renderLetterInputs = () => {
     const { defaultBackgroundColor, defaultBorderColor, hasLetterBorderColor } =
