@@ -13,7 +13,7 @@ import {
 
 export const showToast = (text: string) => {
   Toast.show(text, {
-    duration: 3250,
+    duration: 5,
     position: 50,
     backgroundColor: WHITE_COLOR,
     textColor: BLACK_COLOR,

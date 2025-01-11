@@ -141,6 +141,7 @@ const WordRow = ({ row }: { row: number }) => {
 
   const letterInputAnimation = (letterIndex: number) => {
     const duration = 20;
+
     Animated.timing(letterInputAnimValues[letterIndex], {
       toValue: 1.09,
       duration: duration,
