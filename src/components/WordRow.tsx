@@ -135,7 +135,6 @@ const WordRow = ({ row }: { row: number }) => {
     });
   };
 
-  // To recurse, or not to recurse?
   const startAnimatedBounce = (letterIndex: number, toValue: number) => {
     if (letterIndex > 4) return;
     const animValue = letterBounceAnimValues[letterIndex];
@@ -143,6 +142,7 @@ const WordRow = ({ row }: { row: number }) => {
     return animateElement(animValue, toValue, 150).start(({ finished }) => {
       startAnimatedBounce(letterIndex + 1, -40);
 
+      // To recurse, or not to recurse?
       if (finished) {
         animateElement(animValue, 5, 85).start(({ finished }) => {
           if (finished) {
@@ -166,9 +166,9 @@ const WordRow = ({ row }: { row: number }) => {
     // Rotate halfway
     animateElement(flipAnimValues[letterIndex], 1, 175).start(({ finished }) => {
       if (finished) {
+        // Rotate back after setting background color and go to next letter
         calculateLetterBackground(letterIndex);
 
-        // Rotate back after setting background color and go to next letter
         animateElement(flipAnimValues[letterIndex], 0, 175).start(({ finished }) => {
           if (finished) startGuessLetterAnimation(letterIndex + 1);
         });
@@ -178,18 +178,11 @@ const WordRow = ({ row }: { row: number }) => {
 
   const letterInputAnimation = (letterIndex: number) => {
     const duration = 20;
+    const animValue = letterInputAnimValues[letterIndex];
 
-    Animated.timing(letterInputAnimValues[letterIndex], {
-      toValue: 1.09,
-      duration: duration,
-      useNativeDriver: true,
-    }).start(({ finished }) => {
+    animateElement(animValue, 1.09, duration).start(({ finished }) => {
       if (finished) {
-        Animated.timing(letterInputAnimValues[letterIndex], {
-          toValue: 1,
-          duration: duration,
-          useNativeDriver: true,
-        }).start();
+        animateElement(animValue, 1, duration).start();
       }
     });
   };
