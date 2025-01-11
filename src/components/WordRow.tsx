@@ -77,6 +77,14 @@ const WordRow = ({ row }: { row: number }) => {
     new Animated.Value(1),
   ]).current;
 
+  const letterBounceAnimValues = useRef([
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0),
+  ]).current;
+
   const { container, letterInputStyle } = styles;
 
   const updateWord = (
@@ -91,14 +99,6 @@ const WordRow = ({ row }: { row: number }) => {
     setCurrentLetterPosition((prevLetterPosition) => prevLetterPosition + wordLengthDiff);
 
     return prevWordCopy.join('');
-  };
-
-  const animatedFlipTiming = (letterIndex: number, toValue: number) => {
-    return Animated.timing(flipAnimValues[letterIndex], {
-      toValue,
-      duration: 175,
-      useNativeDriver: true,
-    });
   };
 
   const calculateLetterBackground = (letterIndex: number) => {
@@ -123,16 +123,53 @@ const WordRow = ({ row }: { row: number }) => {
     });
   };
 
+  const animateElement = (
+    valueToChange: Animated.Value,
+    toValue: number,
+    duration: number
+  ) => {
+    return Animated.timing(valueToChange, {
+      toValue,
+      duration,
+      useNativeDriver: true,
+    });
+  };
+
+  // To recurse, or not to recurse?
+  const startAnimatedBounce = (letterIndex: number, toValue: number) => {
+    if (letterIndex > 4) return;
+    const animValue = letterBounceAnimValues[letterIndex];
+
+    return animateElement(animValue, toValue, 150).start(({ finished }) => {
+      startAnimatedBounce(letterIndex + 1, -40);
+
+      if (finished) {
+        animateElement(animValue, 5, 85).start(({ finished }) => {
+          if (finished) {
+            animateElement(animValue, -25, 150).start(({ finished }) => {
+              if (finished) {
+                animateElement(animValue, 0, 170).start();
+              }
+            });
+          }
+        });
+      }
+    });
+  };
+
   const startGuessLetterAnimation = (letterIndex: number): any => {
+    if (letterIndex > 4 && wordState === correctWord) {
+      startAnimatedBounce(0, -40);
+    }
     if (letterIndex > 4) return;
 
     // Rotate halfway
-    animatedFlipTiming(letterIndex, 1).start(({ finished }) => {
+    animateElement(flipAnimValues[letterIndex], 1, 175).start(({ finished }) => {
       if (finished) {
         calculateLetterBackground(letterIndex);
 
         // Rotate back after setting background color and go to next letter
-        animatedFlipTiming(letterIndex, 0).start(({ finished }) => {
+        animateElement(flipAnimValues[letterIndex], 0, 175).start(({ finished }) => {
           if (finished) startGuessLetterAnimation(letterIndex + 1);
         });
       }
@@ -157,6 +194,12 @@ const WordRow = ({ row }: { row: number }) => {
     });
   };
 
+  const reset = () => {
+    setWordState('');
+    setLetterBackgrounds(letterBackgroundsInitial);
+    setCurrentLetterPosition(-1);
+  };
+
   // Do I really need four useEffects?
   useEffect(() => {
     if (row === guessNumber && letterPosition > currentLetterPosition) {
@@ -170,7 +213,9 @@ const WordRow = ({ row }: { row: number }) => {
   }, [letterPosition]);
 
   useEffect(() => {
-    if (guessNumber - 1 === row) startGuessLetterAnimation(0);
+    if (guessNumber - 1 !== row) return;
+
+    startGuessLetterAnimation(0);
   }, [guessNumber]);
 
   useEffect(() => {
@@ -183,9 +228,7 @@ const WordRow = ({ row }: { row: number }) => {
 
   useEffect(() => {
     if (!gameIsStartedFlag) {
-      setWordState('');
-      setLetterBackgrounds(letterBackgroundsInitial);
-      setCurrentLetterPosition(-1);
+      reset();
     }
   }, [gameIsStartedFlag]);
 
@@ -233,6 +276,9 @@ const WordRow = ({ row }: { row: number }) => {
               },
               {
                 scale: letterInputAnimValues[index],
+              },
+              {
+                translateY: letterBounceAnimValues[index],
               },
             ],
           }}

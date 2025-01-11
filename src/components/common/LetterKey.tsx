@@ -145,11 +145,6 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
   };
 
   const handleEnterPress = () => {
-    if (currentWord === correctWord) {
-      setGameIsOver(true);
-      showToast('You did it!');
-    }
-
     if (currentWord.length < 5) {
       showToast('Not enough letters');
       return;
@@ -158,6 +153,11 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
     if (!WORDS.includes(currentWord.toLowerCase())) {
       showToast('Not in word list');
       return;
+    }
+
+    if (currentWord === correctWord) {
+      setGameIsOver(true);
+      showToast('You did it!');
     }
 
     if (guessNumber === 6) {
