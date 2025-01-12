@@ -1,10 +1,10 @@
-import { useMemo, useContext } from 'react';
+import { useMemo, useContext, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@rneui/themed';
 
 import { DarkModeContext } from '../../providers/DarkModeContext';
 import { ColorblindModeContext } from '../../providers/ColorBlindModeContext';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom, useAtomValue } from 'jotai';
 import {
   correctWordAtom,
   letterPositionAtom,
@@ -14,6 +14,8 @@ import {
   guessNumberAtom,
   gameIsOverAtom,
   gameIsStartedAtom,
+  hardModeEnabledAtom,
+  guessedLettersInCorrectWordAtom,
 } from '../../jotai-store';
 
 import {
@@ -35,14 +37,19 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
   const { isDarkTheme } = useContext(DarkModeContext);
   const { isColorblindMode } = useContext(ColorblindModeContext);
 
+  const setEnteredLetter = useSetAtom(enteredLetterAtom);
+  const isHardMode = useAtomValue(hardModeEnabledAtom);
+
   const [correctWord] = useAtom(correctWordAtom);
   const [gameIsOver, setGameIsOver] = useAtom(gameIsOverAtom);
   const [guessNumber, setGuessNumber] = useAtom(guessNumberAtom);
-  const [guessedWords, setGuessedWords] = useAtom(guessedWordsAtom);
   const [letterPosition, setLetterPosition] = useAtom(letterPositionAtom);
   const [currentWord, setCurrentWord] = useAtom(currentWordAtom);
-  const setEnteredLetter = useSetAtom(enteredLetterAtom);
   const [gameIsStarted, setGameIsStarted] = useAtom(gameIsStartedAtom);
+  const [guessedWords, setGuessedWords] = useAtom(guessedWordsAtom);
+  const [guessedLettersInCorrectWord, setGuessedLettersInCorrectWord] = useAtom(
+    guessedLettersInCorrectWordAtom
+  );
 
   const letterInCorrectWord = correctWord.indexOf(keyTitle) !== -1;
 
@@ -127,7 +134,6 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
       handleEnterPress();
     } else {
       if (letterPosition < 4) {
-        if (!gameIsStarted) setGameIsStarted(true);
         setLetterPosition((prevPosition) => prevPosition + 1);
         setEnteredLetter(keyTitle);
         setCurrentWord((prevWord) => prevWord + keyTitle);
@@ -144,10 +150,38 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
     }
   };
 
+  useEffect(() => {
+    let guessedLetters: string[] = [];
+
+    for (let i = 0; i < guessedWords.length; i++) {
+      const guessedWord = guessedWords[i];
+      const letterGuessed = guessedWord.indexOf(keyTitle) !== -1;
+
+      if (letterGuessed && letterInCorrectWord) {
+        guessedLetters.push(keyTitle);
+      }
+    }
+
+    setGuessedLettersInCorrectWord((prevLetters) => [...prevLetters, ...guessedLetters]);
+  }, [guessedWords]);
+
   const handleEnterPress = () => {
     if (currentWord.length < 5) {
       showToast('Not enough letters');
       return;
+    }
+
+    if (isHardMode && gameIsStarted && guessNumber > 1) {
+      let usedHints = false;
+
+      guessedLettersInCorrectWord.forEach((letter) => {
+        if (currentWord.includes(letter)) usedHints = true;
+      });
+
+      if (!usedHints) {
+        showToast('Must use all available hints');
+        return;
+      }
     }
 
     if (!WORDS.includes(currentWord.toLowerCase())) {
@@ -166,6 +200,7 @@ const LetterKey = ({ keyTitle }: LetterKeyProps) => {
     }
 
     if (guessNumber <= 6) {
+      setGameIsStarted(true);
       setGuessNumber((prevGuessNumber) => prevGuessNumber + 1);
       setLetterPosition(-1);
       setCurrentWord('');

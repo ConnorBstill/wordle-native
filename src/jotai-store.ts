@@ -14,5 +14,6 @@ export const gameIsOverAtom = atom(false);
 export const guessNumberAtom = atom(1);
 export const letterPositionAtom = atom(-1);
 export const guessedWordsAtom = atom<string[]>([]);
+export const guessedLettersInCorrectWordAtom = atom<string[]>([]);
 export const currentWordAtom = atom('');
 export const enteredLetterAtom = atom('');
